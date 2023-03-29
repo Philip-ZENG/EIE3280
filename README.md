@@ -6,6 +6,9 @@
   - Database Selection
     - MongoDB: https://www.mongodb.com/docs/manual/tutorial/getting-started/
     - Mongoose (Node.js packet for MongoDB): https://mongoosejs.com/docs/api/model.html
+  - Learning material (video)
+    - https://www.udemy.com/course/the-complete-web-development-bootcamp/learn/lecture/12385648#overview
+    - Section 26, Section 27
   - Data Source
     - EIE3280 PPT
 - Mechanism Design
