@@ -1,5 +1,14 @@
 # EIE3280 Project
 
+### 0x00 File Structure
+
+- `./database`: Formal database for the application
+  - `courseDB.js`: Create MongoDB database named `courseDB`; define and insert all tags, pages, and sections into the database
+  - `queryCourseDB.js`: Implement the function of generating ranked section results based on search key words
+- `./tagGraph`: test and develop tag graph related functions
+  - `tagGraph.js`: Create MongoDB database named `tagGraphDB`; define and insert all tags into the database; tags are designed to represent node in a tag graph
+  - `shortestDistanceBetweenTags.js`: Dijkstra algorithm to calculate shortest distance between tag nodes
+
 ### 0x01 System Design
 
 - Build Database
@@ -42,17 +51,37 @@
   - Rank these section based on a Relevance Score (towards the `DecisiveTag`, which represents the search key word)
 
     - For a section that contain `DecisiveTag`, it may also contain other tags, we calculate a distance between the `DecisiveTag` and other tags
+    
     - The closer the other tag A is to the `DecisiveTag`, the more relevant tag A is to the `DecisiveTag`
+    
+    - The shortest distance between tag A and `DecisiveTag` is $Distance(A,DecisiveTag)$
+      - The shortest distance can be calculate with the **Dijkstra Algorithm**
+      
     - The relevance score of `DecisiveTag` to tag A is: 
       $$
       RelevanceScore(A,DecisiveTag)=\frac{1}{Distance(A,DecisiveTag)+1}
       $$
+      
     - The relevance score between `DecisiveTag`  and `DecisiveTag` is 1
-    - For a section that contain N tags (include `DecisiveTag`), the relevance score (in regard to `DecisiveTag`) of the section is
+    
+    - For a section that contain N tags (include `DecisiveTag`), we denote the set of tags as `T`, the relevance score (in regard to `DecisiveTag`) of the section is
       $$
-      SectionRelevanceScore = \frac{1}{N}\sum_{i\neq{DecisiveTag}}{RelevanceScore(i,DecisiveTag)} = \frac{1}{N}\sum_{i\neq{DecisiveTag}}\frac{1}{Distance(i,DecisiveTag)+1}
+      SectionRelevanceScore(DecisiveTag) 
+      & =  \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}{RelevanceScore(i,DecisiveTag)}\\
+      & = \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}\frac{1}{Distance(i,DecisiveTag)+1}
       $$
-
+      
+    - For the case of multiple `DecisiveTag`, we denote the set of `DecisiveTag` as `D`, the section relevance score is:
+      $$
+      SectionRelevanceScore(D)=\sum_{i\in{D}} \frac{WeightedFrequency(i)}{TotalWeightedFrequncy(D)} \times SectionRelevanceScore(i)
+      $$
+    
+      - $TotalWeightedFrequency(D)$ can be calculated by
+        $$
+        TotalWeightedFrequency(D) = \sum_{i\in{D}} WeightedFrequency(i)
+        $$
+        
+    
     - Then normalized the `SectionRelevanceScore` to the value such their sum equals 1
 
 - User Feedback
@@ -80,8 +109,6 @@
     RecommendationScore(A,DecisiveTag) = ImportanceScore(A) + RelevantScore(A,DecisiveTag)
     $$
     
-
-
 
 ### 0x03 Implementation
 
