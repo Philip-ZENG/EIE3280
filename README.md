@@ -58,46 +58,35 @@
       - The shortest distance can be calculate with the **Dijkstra Algorithm**
       
     - The relevance score of `DecisiveTag` to tag A is: 
-      $$
-      RelevanceScore(A,DecisiveTag)=\frac{1}{Distance(A,DecisiveTag)+1}
-      $$
+      
+      - $RelevanceScore(A,DecisiveTag)=\frac{1}{Distance(A,DecisiveTag)+1}$
       
     - The relevance score between `DecisiveTag`  and `DecisiveTag` is 1
     
     - For a section that contain N tags (include `DecisiveTag`), we denote the set of tags as `T`, the relevance score (in regard to `DecisiveTag`) of the section is
-      $$
-      SectionRelevanceScore(DecisiveTag) 
+      
+      $SectionRelevanceScore(DecisiveTag) 
       & =  \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}{RelevanceScore(i,DecisiveTag)}\\
-      & = \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}\frac{1}{Distance(i,DecisiveTag)+1}
-      $$
+      & = \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}\frac{1}{Distance(i,DecisiveTag)+1}$
       
     - For the case of multiple `DecisiveTag`, we denote the set of `DecisiveTag` as `D`, the section relevance score is:
-      $$
-      SectionRelevanceScore(D)=\sum_{i\in{D}} \frac{WeightedFrequency(i)}{TotalWeightedFrequncy(D)} \times SectionRelevanceScore(i)
-      $$
     
-      - $TotalWeightedFrequency(D)$ can be calculated by
-        $$
-        TotalWeightedFrequency(D) = \sum_{i\in{D}} WeightedFrequency(i)
-        $$
-        
+      - $TotalWeightedFrequency(D) = \sum_{i\in{D}} WeightedFrequency(i)$
+    
+      - $SectionRelevanceScore(D)=\sum_{i\in{D}} \frac{WeightedFrequency(i)}{TotalWeightedFrequncy(D)} \times SectionRelevanceScore(i)$
     
     - Then normalized the `SectionRelevanceScore` to the value such their sum equals 1
-
+  
 - User Feedback
 
   - User can provide a binary feedback on the search results (Helpful or Not Helpful)
 
   - For `p` positive and `q` negative feedback, it will generate a feedback score
-    $$
-    FeedbackScore = \frac{p-q}{100}
-    $$
-
+    - $FeedbackScore = \frac{p-q}{100}$
+    
   - A adjusted Rank Score will be used to rank sections display order
-    $$
-    RankSocre = SectionRelevanceScore + FeedbackScore
-    $$
-
+    - $RankSocre = SectionRelevanceScore + FeedbackScore$
+  
 - Recommendation
 
   - Consider both the relevance and importance of each tag
@@ -105,10 +94,7 @@
   - The importance score is calculated by the PageRank Algorithm
 
   - Important and relevant tags will be recommended based on the Recommendation score of the tag
-    $$
-    RecommendationScore(A,DecisiveTag) = ImportanceScore(A) + RelevantScore(A,DecisiveTag)
-    $$
-    
+    - $RecommendationScore(A,DecisiveTag) = ImportanceScore(A) + RelevantScore(A,DecisiveTag)$
 
 ### 0x03 Implementation
 
