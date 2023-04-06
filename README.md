@@ -65,9 +65,7 @@
     
     - For a section that contain N tags (include `DecisiveTag`), we denote the set of tags as `T`, the relevance score (in regard to `DecisiveTag`) of the section is
       
-      $SectionRelevanceScore(DecisiveTag) 
-      & =  \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}{RelevanceScore(i,DecisiveTag)}\\
-      & = \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}\frac{1}{Distance(i,DecisiveTag)+1}$
+      $SectionRelevanceScore(DecisiveTag) & =  \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}{RelevanceScore(i,DecisiveTag)}\\ & = \frac{1}{N}\sum_{i\in{T}, i\neq{DecisiveTag}}\frac{1}{Distance(i,DecisiveTag)+1}$
       
     - For the case of multiple `DecisiveTag`, we denote the set of `DecisiveTag` as `D`, the section relevance score is:
     
