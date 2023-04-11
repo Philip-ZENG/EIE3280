@@ -15,6 +15,7 @@ const pageSchema = new mongoose.Schema ({
   title: String,
   content: String
 });
+
 // Schema for each section
 const sectionSchema = new mongoose.Schema ({
   sectionID: Number,
@@ -22,7 +23,8 @@ const sectionSchema = new mongoose.Schema ({
   page: [Number],
   tag: [tagSchema],
   tagIDs: [Number],
-  content: [pageSchema]
+  content: [pageSchema],
+  feedbackScore: { type: Number, default: 0 }
 });
 
 // Create a collection which is an instance of the tag schema
@@ -33,7 +35,7 @@ const Section = mongoose.model("Section", sectionSchema);
 const Page = mongoose.model("Page", pageSchema);
 
 
-// ############### Query Data ###############
+// ! ############### Map Search Word to Decisive Tags ###############
 
 // * Step 1: Get all the pages whose `content` field or `title` field contain a specific search string
 async function findPages(searchString) {
@@ -55,7 +57,7 @@ async function findSections(pages, occurrenceWeight, sectionMap, tagMap) {
       // Count occurrence frequency of sections
       let sectionID = sections[0].sectionID;
       if (sectionMap.has(sectionID)) {
-        // If it is, increment the count
+        // If sectionID is already a map key, increment the count
         sectionMap.set(sectionID, sectionMap.get(sectionID) + occurrenceWeight);
       } else {
         // If it's not, add it to the Map with a initial occurrence weight
@@ -79,8 +81,10 @@ async function findSections(pages, occurrenceWeight, sectionMap, tagMap) {
   return {sectionMap, tagMap};
 };
 
-// * Step 3: Given the tagIDCountMap, determine the tagIDs that has the top `decisiveTagNumber` highest count value
-//  * return a new Map object that contains the top 3 tagIDs (key) and their count value (value)
+// ! ############### Compute Relevance Score ###############
+
+// * Step 3: Given the tagIDCountMap, determine the tagIDs that has the top `decisiveTagNumber` of highest count value
+//  * return a new Map object that contains the top `decisiveTagNumber` of tagIDs (key) and their count value (value)
 function findDecisiveTag(tagMap, decisiveTagNumber) {
   // Convert the Map to an array of key-value pairs and sort by count value in descending order
   const sortedPairs = Array.from(tagMap).sort((a, b) => b[1] - a[1]);
@@ -187,7 +191,7 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
   // Create a Map to store the sectionID (key) and the relevance score (value)
   var sectionRelevanceScoreMap = new Map();
   
-  // ! This works when we only consider 1 decisive tag
+  // ! This works even when multiple decisive tag is used
   // Iterate trough decisiveTagIDArray
   for (let k = 0; k < decisiveTagIDArray.length; k++){
 
@@ -208,14 +212,9 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
       // Calculate the relevance score
       let relevanceScore = 0;
       for (let j = 0; j < tagIDs.length; j++){
-        if(tagIDs[j] != decisiveTagID){
-          // If the tag is not the decisive tag
-          relevanceScore += 1/(DistanceMap.get(tagIDs[j])+1);
-        } else {
-          // If the tag is the decisive tag
-          relevanceScore += 1;
-        };
+        relevanceScore += 1/(DistanceMap.get(tagIDs[j])+1);
       };
+
       // For a decisive map with more than 1 tag (key), we need to assign each tag's influence such that it is proportional to the weighted frequecy of the tag
       // the proportional factor is (decisiveMap.get(decisiveTagID)/sumOfWeightedFrequency)
       relevanceScore = (decisiveMap.get(decisiveTagID)/sumOfWeightedFrequency)*(relevanceScore/(tagIDs.length));
@@ -229,25 +228,80 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
         // otherwie insert a new sectionID and the relevance score pair in the Map
         sectionRelevanceScoreMap.set(sectionID, relevanceScore);
       };
-
     };
-  
   };
-
   return sectionRelevanceScoreMap;
-}
+};
 
-// * Step 6: Sort the sections by relevance score in descending order
-async function sortSections(sectionRelevanceScoreMap){
+
+// ! ############### User Feedback Mechanism & RankScore Calculation ###############
+// * Step 6-1: Update the feedback score of each section
+async function updateFeedbackScore(sectionID, isHelpful){
+  var result = await Section.find({sectionID: sectionID}).select({feedbackScore:1, _id:0});
+  var feedbackScore = result[0].feedbackScore;
+  if(isHelpful){
+    feedbackScore += 1;
+  } else {
+    feedbackScore -= 1;
+  };
+  await Section.updateOne({sectionID: sectionID},{feedbackScore: feedbackScore});
+};
+
+// * Helper Function: Random feedback generator
+// Generate random feedbacks (true: helpful, false: not helpful)
+async function generateRandomFeedback(sectionRelevanceScoreMap, numOfFeedback) {
+  const keys = Array.from( sectionRelevanceScoreMap.keys() );
+  for (let i=0; i<numOfFeedback; i++) {
+    const keyLength = keys.length;
+    // select a random key from the sectionRelevanceScoreMap
+    const randomIndex = Math.floor(Math.random() * keyLength);
+    const key = keys[randomIndex];
+    // Give a random feedback
+    const isHelpful = Math.random() >= 0.5;
+    await updateFeedbackScore(key, isHelpful);
+  };
+};
+
+// * Step 6-2: Calculate the rank score of each section, rank score = relevance score + feedback score
+async function calculateRankScore(sectionRelevanceScoreMap){
+  // Create a Map to store the sectionID (key) and the rank score (value)
+  var sectionRankScoreMap = new Map();
+  // Iterate through the sectionRelevanceScoreMap
+  for (let key of sectionRelevanceScoreMap.keys()) {
+    // Get the feedback score of the section
+    let result = await Section.find({sectionID: key}).select({feedbackScore:1, _id:0});
+    let feedbackScore = result[0].feedbackScore;
+    // Set an upper bound for the feedback score, upper bound = 100
+    if (feedbackScore > 100){
+      feedbackScore = 100;
+    };
+    // Set a lower bound for the feedback score, lower bound = -100
+    if (feedbackScore < -100){
+      feedbackScore = -100;
+    };
+    // Calculate the rank score, the influence of the feedback score reflected in rankScore is between -100/300 to 100/300
+    let rankScore = sectionRelevanceScoreMap.get(key) + feedbackScore/300;
+    // Insert the sectionID and the rank score pair in the Map
+    sectionRankScoreMap.set(key, rankScore);
+  };
+  return sectionRankScoreMap;
+};
+
+// ! ############### Rank Sections based on RankScore ###############
+// * Step 7: Sort the sections by rank score in descending order
+async function sortSections(sectionRankScoreMap){
   // Create an array to store the sectionID
-  var rankedSectionIDArray = Array.from(sectionRelevanceScoreMap.keys());
+  var rankedSectionIDArray = Array.from(sectionRankScoreMap.keys());
   // Sort the sectionIDArray in descending order
-  rankedSectionIDArray.sort(function(a, b){return sectionRelevanceScoreMap.get(b) - sectionRelevanceScoreMap.get(a)});
+  rankedSectionIDArray.sort(function(a, b){return sectionRankScoreMap.get(b) - sectionRankScoreMap.get(a)});
   return rankedSectionIDArray;
-}
+};
+
+
 
 // * Main function
 async function main() {
+  // ! #### Map Search Word to Decisive Tags #####
   const pages = await findPages("Google");
   console.log("contentMappedPages: ");
   console.log(pages.contentMappedPages);
@@ -262,6 +316,8 @@ async function main() {
   returns = await findSections(pages.titleMappedPages, 2, returns.sectionMap, returns.tagMap);
   const sectionIDFrequencyMap = returns.sectionMap;
   const tagIDFrequencyMap = returns.tagMap;
+
+  // ! #### Compute Relevance Score ####
   console.log("sectionIDFrequencyMap: ", sectionIDFrequencyMap);
   console.log("tagIDFrequencyMap: ", tagIDFrequencyMap);
 
@@ -274,7 +330,14 @@ async function main() {
   const sectionRelevanceScoreMap = await calculateRelevanceScore(sectionIDArray, decisiveMap);
   console.log("sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
 
-  const rankedSectionIDArray = await sortSections(sectionRelevanceScoreMap);
+  // ! #### User Feedback Mechanism & RankScore Calculation ####
+  await generateRandomFeedback(sectionRelevanceScoreMap, 10);
+
+  const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
+  console.log("rankScore: ", rankScoreMap);
+
+  // ! #### Rank Sections based on RankScore ####
+  const rankedSectionIDArray = await sortSections(rankScoreMap);
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
 };
 

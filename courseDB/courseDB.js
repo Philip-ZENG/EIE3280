@@ -25,9 +25,9 @@ const sectionSchema = new mongoose.Schema ({
   page: [Number],
   tag: [tagSchema],
   tagIDs: [Number],
-  content: [pageSchema]
+  content: [pageSchema],
+  feedbackScore: { type: Number, default: 0 }
 });
-
 
 // Create a collection which is an instance of the tag schema
 const Tag = mongoose.model("Tag", tagSchema);
@@ -589,7 +589,7 @@ async function insertNewData() {
   await Section.create([section1, section2, section3]);
   console.log(">>> Successfuly insert new pages and sections");
   mongoose.disconnect();
-}
+};
 
 
 insertNewData();
