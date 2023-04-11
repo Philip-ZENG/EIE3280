@@ -1,0 +1,24 @@
+{
+  "name": "eie3280",
+  "version": "1.0.0",
+  "description": "- `./courseDB`: Formal database for the application\r   - `courseDB.js`: Create MongoDB database named `courseDB`; define and insert all tags, pages, and sections into the database\r   - `search.js`: Implement the function of generating ranked section results based on search key words\r   - `recommend.js`: Implement the function of recommending tags given certain decisive tags\r - `./tagGraphDB`: Test and develop tag graph related functions\r   - `tagGraph.js`: Create MongoDB database named `tagGraphDB`; define and insert all tags into the database; tags are designed to represent node in a tag graph\r   - `shortestDistanceBetweenTags.js`: Dijkstra algorithm to calculate shortest distance between tag nodes\r   - `pageRank.js`: Google PageRank algorithm, compute the importance score of each tag in the tag graph\r   - `indexed_tag_graph.png`: Image that show the connection between tags and their unique index",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Philip-ZENG/EIE3280.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Philip-ZENG/EIE3280/issues"
+  },
+  "homepage": "https://github.com/Philip-ZENG/EIE3280#readme",
+  "dependencies": {
+    "mathjs": "^11.8.0",
+    "mongoose": "^7.0.3"
+  }
+}
