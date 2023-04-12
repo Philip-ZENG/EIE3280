@@ -398,7 +398,6 @@ const section1 = new Section({
   content: [page2,page3,page4,page5,page6,page7]
 });
 
-
 // #################### Section 2 ####################
 const page8 = new Page({
   pageID: 8,
