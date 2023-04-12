@@ -96,17 +96,29 @@
 
 ### 0x03 Implementation
 
-- Database Building
+- Database
   - Tasks
     - Chapter 1: zhuangyan
     - Chapter 2: zhuoru
     - Chapter 3: yiwei
     - Chapter 4: xuanwen
   - Sample Code:
-    - `database\courseDB.js`
+    - `courseDB\courseDB.js`
 - Back-end
-  - Search module: zhuoru
-  - Recommendation module: zhuoru
+  - Node.JS modules:
+    - Mongoose: MongoDB interface to JavaScript code
+    - Mathjs: Math operations (especially matrix operations)
+    - Express.JS: For communication between back-end and front-end
+  - Tasks
+    - Search module: zhuoru
+    - Recommendation module: zhuoru
+- Front-end
+  - Node.JS modules:
+    - Next: Upgraded react structure (include routing function)
+    - semantic-ui-react: UI component library
+    - react-redux: Cross component data transmission
+    - Axios: For communication between front-end and back-end
+
 
 
 ### 0x04 Way to Run the Code
@@ -114,11 +126,8 @@
 - Environment Requirement
 
   - Database: MongoDB
-  - JavaScript running environment: Node.JS
-  - Node.JS modules:
-    - Mongoose: MongoDB interface to JavaScript code
-    - Mathjs: Math operations (especially matrix operations)
-
+  - JavaScript runtime environment: Node.JS
+  
 - Setup Environment
 
   - Clone the project from GitHub
