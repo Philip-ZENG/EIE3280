@@ -26,7 +26,10 @@
 - Database Schema Design
    - Page Schema
      - Each page can have multiple tag
-
+     - pageID: a unique ID value that is used to identify a specific page
+       - `pageID%100` is the page number of that page item in its chapter
+       - `(pageID-pageID%100)/100` is the chapter number that page item belongs to
+     
    - Section Schema
    - Tag Schema
      - Each tag has 1 importance score
@@ -118,8 +121,6 @@
     - semantic-ui-react: UI component library
     - react-redux: Cross component data transmission
     - Axios: For communication between front-end and back-end
-
-
 
 ### 0x04 Way to Run the Code
 
