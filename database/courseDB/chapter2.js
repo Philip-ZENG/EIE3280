@@ -1,3 +1,10 @@
+/**
+ * @description
+ * * EIE3280 Chapter 2 Slides Database
+ * @IDmeaning
+ * * For both page and section ID, the last two digits are its order in the chapter, the first digit is the chapter number
+ */
+
 const mongoose = require('mongoose');
 
 mongoose.connect("mongodb://127.0.0.1:27017/courseDB");
@@ -326,30 +333,17 @@ const Equilibrium = new Tag({
   neighbors: [44]
 });
 
-
-async function insertNewTag() {
-  // Insert the new document into the collectioin
-  await Tag.create([Cosine, SimilarityMatrix, NeighborhoodMethod, ContentBasedFilter, Netflix, NeighborhoodPredictor, CollaborativeFiltering, BaselinePredictor, RootMeanSquareError]);
-  await Tag.create([ConvexOptimization, ErrorMatrix, MatrixDerivative, IncomingLinks, Webpages, HMatrix, OutgoingLinks, PageRankAlgorthm, HHatMatrix, GoogleMatrix, ImportanceScore]);
-  await Tag.create([EigenVector, MatrixOperation, LinearAlgebra, Google, ClickthroughRate, AdvertisementSpace, Auction, SecondPriceAuction, MultipleItemAuction, OpenAuction, Externality]);
-  await Tag.create([SingleItemAuction, SealedEnvelopAuction, TruthfulBidding, IndependentValuation, FDMA, TDMA, CDMA, Wireless, Inference, NearFarProblem, DPC, SIR, GameTheory, Optimization, Infeasible, Feasible, Equilibrium]);
-  console.log(">>> Successfuly insert new tags");
-};
-
-insertNewTag();
-
-
 // ******************** Define pages and Sections ********************
 
 // #################### Section 1 ####################
-const page2 = new Page({
-  pageID: 2,
+const page202 = new Page({
+  pageID: 202,
   title: "How does Google sell ad spaces",
   content: ""
 });
 
-const page3 = new Page({
-  pageID:3,
+const page203 = new Page({
+  pageID:203,
   title: "How to Sell Online Ad Space",
   content: "{Global online advertisement industry revenue: $95 billions in 2012}\
   {Different goals: Sellers vs. Buyers}\
@@ -358,49 +352,51 @@ const page3 = new Page({
   {2002: Auction-based, Google AdWorks, Search advertisements/sponsored contents}"
 });
 
-const page4 = new Page({
-  pageID:4,
+const page204 = new Page({
+  pageID:204,
   title: "Question 1",
   content: "{Where will your ad appear?}\
   {Example: Search “Overseas Study” (Chinese) in Google}"
 });
 
-const page5 = new Page({
-  pageID:5,
+const page205 = new Page({
+  pageID:205,
   title: "Question 1",
   content: "{Different spots have different values}\
   {Each has an expected clickthrough rate C}\
   {Assume C is independent of the content of the ad}"
 });
 
-const page6 = new Page({
-  pageID:6,
+const page206 = new Page({
+  pageID:206,
   title: "Question 2",
   content: "{How do advertisers pay Google?}\
   {When you actually click}\
   {Assume actual clickthrough rate is also C}"
 });
 
-const page7 = new Page({
-  pageID:7,
+const page207 = new Page({
+  pageID:207,
   title: "Question 3",
   content: "{What's in it for the advertisers?}\
   {Revenue depends on: C: average clicks per hour, R: average revenue per click, C * R: average revenue in dollar per hour (The valuation of the ad space to the buyer)}\
   {Example: C = 400 clicks/hour R = $10/click Valuation = C * R = $4000/hour}"
 });
 
-const section1 = new Section({
-  sectionID: 1,
+const section201 = new Section({
+  sectionID: 201,
   chapter: 2,
-  page: [page2.pageID,page3.pageID,page4.pageID,page5.pageID,page6.pageID,page7.pageID],
+  page: [page202.pageID,page203.pageID,page204.pageID,page205.pageID,page206.pageID,page207.pageID],
   tag: [Google,AdvertisementSpace],
   tagIDs: [Google.tagID,AdvertisementSpace.tagID],
-  content: [page2,page3,page4,page5,page6,page7]
+  content: [page202,page203,page204,page205,page206,page207]
 });
 
+
 // #################### Section 2 ####################
-const page8 = new Page({
-  pageID: 8,
+
+const page208 = new Page({
+  pageID: 208,
   title: "Auction",
   content: "{From Roman Empire to eBay and Google}\
   {1 seller (Google)}\
@@ -410,80 +406,80 @@ const page8 = new Page({
   {Seller: Allocate items to buyers, Charge each buyer}"
 });
 
-const page9 = new Page({
-  pageID: 9,
+const page209 = new Page({
+  pageID: 209,
   title: "Single Item Public Auction",
   content: "{Ascending price: The prices gradually increases, Stops when no bidder is willing to offer a higher price}\
   {Descending price: The prices gradually decreases, Stops when some bidder is willing to pay the current price}"
 });
 
-const page10 = new Page({
-  pageID: 10,
+const page210 = new Page({
+  pageID: 210,
   title: "Single Item Sealed Envelop",
   content: "{First price: Highest bidder pays the highest bid}\
   {Second price: Highest bidder pays the second highest bid}"
 });
 
-const page11 = new Page({
-  pageID: 11,
+const page211 = new Page({
+  pageID: 211,
   title: "Multiple Items",
   content: "{Generalized Second Price (GSP)}\
   {Vickrey-Clarke-Groves (VCG)}"
 });
 
-const page12 = new Page({
-  pageID: 12,
+const page212 = new Page({
+  pageID: 212,
   title: "Why Auctions?",
   content: "{Resource allocation: Suitable when the auctioneer does not know the value of the resource}\
   {Private valuation: vi of bidder i: not known by the auctioneer or other bidders}\
   {Independent valuations: vi is independent of other user j}"
 });
 
-const page13 = new Page({
-  pageID: 13,
+const page213 = new Page({
+  pageID: 213,
   title: "What Does Each Party Want?",
   content: "{Seller: revenue}\
   {Buyers: payof: Difference between valuation and payment}\
   {Auction designer: Efficient and fair, Truthful bidding}"
 });
 
-const page14 = new Page({
-  pageID: 14,
+const page214 = new Page({
+  pageID: 214,
   title: "Auction as a Game",
   content: "{Set of players: the set of bidders: N , indexed by i}\
   {The strategy space per player: bid bi ≥ 0}\
   {Payoff function per player:  If the bidder wins the auction, Payoff = valuation - payment: Ui(b) = vi - pi(b), Payment pi depends on everyone's bidding behavior (vector b) and the auction rule (function pi(·)), If the bidder loses: Ui(b) = 0}"
 });
 
-const section2 = new Section({
-  sectionID: 2,
+const section202 = new Section({
+  sectionID: 202,
   chapter: 2,
-  page: [page8.pageID,page9.pageID,page10.pageID,page11.pageID,page12.pageID,page13.pageID,page14.pageID],
+  page: [page208.pageID,page209.pageID,page210.pageID,page211.pageID,page212.pageID,page213.pageID,page214.pageID],
   tag: [Auction],
   tagIDs: [Auction.tagID],
-  content: [page8,page9,page10,page11,page12,page13,page14]
+  content: [page208,page209,page210,page211,page212,page213,page214]
 });
 
 
 // #################### Section 3 ####################
 
-const page15 = new Page({
-  pageID: 15,
+const page215 = new Page({
+  pageID: 215,
   title: "Designing an Auction",
   content: "{Different auction rules induce different bidding behaviors}\
   {First price}\
   {Second price}"
 });
 
-const page16 = new Page({
-  pageID: 16,
+const page216 = new Page({
+  pageID: 216,
   title: "Second Price (Single Item)",
   content: "{Decoupling of allocation and pricing}\
   {An experiment}"
 });
 
-const page17 = new Page({
-  pageID: 17,
+const page217 = new Page({
+  pageID: 217,
   title: "Still a Mystery?",
   content: "{Why not third price?}\
   {Anything special about second price?}\
@@ -491,8 +487,8 @@ const page17 = new Page({
   {Pay for what you damaged}"
 });
 
-const page18 = new Page({
-  pageID: 18,
+const page218 = new Page({
+  pageID: 218,
   title: "Second Price (Multiple Items)",
   content: "{Special example: number of bidders N = number of spaces K}\
   {Left: bidders ranking in the decreasing order of the revenue per click (R)}\
@@ -500,8 +496,8 @@ const page18 = new Page({
   {Each bidder submits a bid (assuming truthful bidding): The bid can be viewed as a scalar: bi = Ri, The bid can also be viewed as a vector: bi = Ri * C}"
 });
 
-const page19 = new Page({
-  pageID: 19,
+const page219 = new Page({
+  pageID: 219,
   title: "General Second Price Auction (GSP)",
   content: "{Bidding: bidder i}\
   {Allocation: jth highest bidder gets the jth most valuable space}\
@@ -509,46 +505,46 @@ const page19 = new Page({
   {What about the least bidder?}"
 });
 
-const page20 = new Page({
-  pageID: 20,
+const page220 = new Page({
+  pageID: 220,
   title: "Detour",
   content: "{Why not let each buyer submit multiple bids? (not just all multiples of a common number bi)}\
   {Other types of bipartite graphs and matching}"
 });
 
-const page21 = new Page({
-  pageID: 21,
+const page221 = new Page({
+  pageID: 221,
   title: "Previous Example",
   content: "{Bidding (Assume truthful)}\
   {Allocation:}\
   {Charging:}"
 });
 
-const page22 = new Page({
-  pageID: 22,
+const page222 = new Page({
+  pageID: 222,
   title: "Example",
   content: "{Revenue to Google:}\
   {Payoffs to buyers:}\
   {Total buyers' payoff:}"
 });
 
-const page23 = new Page({
-  pageID: 23,
+const page223 = new Page({
+  pageID: 223,
   title: "GSP May not Induce Truthful Bidding",
   content: "{First assume truthful bidding from everyone}\
   {Now consider buyer' 1 deviation from b1 = $12 to b1 = $7}\
   {Show that truthful bidding is not an NE in this example}"
 });
 
-const page24 = new Page({
-  pageID: 24,
+const page224 = new Page({
+  pageID: 224,
   title: "GSP or VCG?",
   content: "{Beyond Google ad search: e.g., AppNexus (VCG)}\
   {Why GSP for Google: Simplicity of explanation, Multiple parallel auctions, Irrational behavior}"
 });
 
-const page25 = new Page({
-  pageID: 25,
+const page225 = new Page({
+  pageID: 225,
   title: "Variants We Have Seen",
   content: "{Auction}\
   {Open, Sealed Envelop}\
@@ -556,37 +552,37 @@ const page25 = new Page({
   {Multiple Item Generalization: GSP, VCG}"
 });
 
-const page26 = new Page({
-  pageID: 25,
+const page226 = new Page({
+  pageID: 226,
   title: "Many More We Haven't",
   content: "{Simultaneous auctions}\
   {Reverse auctions}\
   {Multiple winner auctions}"
 });
 
-const page27 = new Page({
-  pageID: 27,
+const page227 = new Page({
+  pageID: 227,
   title: "Summary",
   content: "{Auctions allocate items among competing buyers}\
   {Different auction rules induce different bidding behavior}\
   {Pricing based on externality induces truthful bidding}"
 });
 
-const section3 = new Section({
-  sectionID: 3,
+const section203 = new Section({
+  sectionID: 203,
   chapter: 2,
-  page: [page15.pageID,page16.pageID,page17.pageID,page18.pageID,page19.pageID,page20.pageID,page21.pageID,page22.pageID,page23.pageID,page24.pageID,page25.pageID,page26.pageID,page27.pageID],
+  page: [page215.pageID,page216.pageID,page217.pageID,page218.pageID,page219.pageID,page220.pageID,page221.pageID,page222.pageID,page223.pageID,page224.pageID,page225.pageID,page226.pageID,page227.pageID],
   tag: [Auction, SecondPriceAuction],
   tagIDs: [Auction.tagID, SecondPriceAuction.tagID],
-  content: [page15,page16,page17,page18,page19,page20,page21,page22,page23,page24,page25,page26,page27]
+  content: [page215,page216,page217,page218,page219,page220,page221,page222,page223,page224,page225,page226,page227]
 });
 
 // ************* Insert Data *************
 async function insertNewData() {
   // Insert the new document into the collectioin
-  await Page.create([page2, page3, page4, page5, page6, page7, page8, page9, page10, page11, page12, page13, page14, page15, page16, page17, page18, page19, page20, page21, page22, page23, page24, page25, page26, page27]);
-  await Section.create([section1, section2, section3]);
-  console.log(">>> Successfuly insert new pages and sections");
+  await Page.create([page202, page203, page204, page205, page206, page207, page208, page209, page210, page211, page212, page213, page214, page215, page216, page217, page218, page219, page220, page221, page222, page223, page224, page225, page226, page227]);
+  await Section.create([section201, section202, section203]);
+  console.log(">>> Successfuly insert new pages and sections of Chapter 2!");
   mongoose.disconnect();
 };
 
