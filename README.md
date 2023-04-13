@@ -2,11 +2,20 @@
 
 ### 0x00 File Structure
 
-- `./courseDB`: Formal database for the application
-  - `courseDB.js`: Create MongoDB database named `courseDB`; define and insert all tags, pages, and sections into the database
-  - `search.js`: Implement the function of generating ranked section results based on search key words
-  - `recommend.js`: Implement the function of recommending tags given certain decisive tags
-- `./tagGraphDB`: Test and develop tag graph related functions
+#### `./algorithm`
+
+- `search.js`: Implement the function of generating ranked section results based on search key words
+- `recommend.js`: Implement the function of recommending tags given certain decisive tags
+
+#### `./database`
+
+- `./database/courseDB`: Formal database for the application; Create MongoDB database named `courseDB`; define and insert all tags, pages, and sections into the database
+  - `tag.js`: Define and insert all tags
+  - `chapter2.js`: Define and insert pages and sections of chapter 2
+  - `chapter4.js`: Define and insert pages and sections of chapter 3
+  - `createDB.sh`: bash script to run multiple commands at once; Run this script to create the whole database in one shot
+
+- `./database/tagGraphDB`: Test and develop tag graph related functions
   - `tagGraph.js`: Create MongoDB database named `tagGraphDB`; define and insert all tags into the database; tags are designed to represent node in a tag graph
   - `shortestDistanceBetweenTags.js`: Dijkstra algorithm to calculate shortest distance between tag nodes
   - `pageRank.js`: Google PageRank algorithm, compute the importance score of each tag in the tag graph
@@ -141,22 +150,22 @@
 
 - Run code
 
-  - Create database and insert data
+  - Create database and insert data. Run the following command in **Git Bash Shell**
 
     ```shell
-    node ./courseDB/courseDB
+    bash ./database/courseDB/createDB.sh
     ```
 
-  - Make a search
+  - Make a search. Run the following command in any shell.
 
     ```shell
-    node ./courseDB/search.js
+    node ./algorithm/search.js
     ```
 
-  - Make recommendation
+  - Make recommendation. Run the following command in any shell.
 
     ```shell
-    node ./courseDB/recommend.js
+    node ./algorithm/recommend.js
     ```
 
     
