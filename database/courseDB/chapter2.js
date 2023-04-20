@@ -335,7 +335,7 @@ const Equilibrium = new Tag({
 
 // ******************** Define pages and Sections ********************
 
-// #################### Section 1 ####################
+// #################### Section 201 ####################
 const page202 = new Page({
   pageID: 202,
   title: "How does Google sell ad spaces",
@@ -393,7 +393,7 @@ const section201 = new Section({
 });
 
 
-// #################### Section 2 ####################
+// #################### Section 202 ####################
 
 const page208 = new Page({
   pageID: 208,
@@ -461,7 +461,7 @@ const section202 = new Section({
 });
 
 
-// #################### Section 3 ####################
+// #################### Section 203 ####################
 
 const page215 = new Page({
   pageID: 215,

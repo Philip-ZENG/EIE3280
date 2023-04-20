@@ -3,7 +3,6 @@
  * * Given a search string, return a list of sections that are relevant to the search string
  */
 
-
 const mongoose = require('mongoose');
 
 mongoose.connect("mongodb://127.0.0.1:27017/courseDB");
@@ -133,7 +132,7 @@ async function Dijkstra(tagIDArray, startTagID){
   Distance.set(startTagID, 0);
   const startTag = await Tag.find({tagID: startTagID});
   const startTagNeighborsID = startTag[0].neighbors;
-  for (let i = 0; i < tagIDArray.length; i++){
+  for (var i = 0; i < tagIDArray.length; i++){
     if (tagIDArray[i] != startTagID){
       if (startTagNeighborsID.includes(tagIDArray[i])) {
         // ! Cost of each edge is assumed to be 1
@@ -148,32 +147,41 @@ async function Dijkstra(tagIDArray, startTagID){
   while (LeastCostPath.length < tagIDArray.length){
     var minDistance = Infinity;
     var minDistanceTagID = 0;
-    for (let j = 0; j < tagIDArray.length; j++){
+    for (var i = 0; i < tagIDArray.length; i++){
       // For tag that is not in the least cost path
-      if (!LeastCostPath.includes(tagIDArray[j])){
+      if (!LeastCostPath.includes(tagIDArray[i])){
         // Find the tag with the minimum distance from the start tag
-        if (Distance.get(tagIDArray[j]) < minDistance){
-          minDistance = Distance.get(tagIDArray[j]);
-          minDistanceTagID = tagIDArray[j];
+        if (Distance.get(tagIDArray[i]) < minDistance){
+          minDistance = Distance.get(tagIDArray[i]);
+          minDistanceTagID = tagIDArray[i];
         };
       };
     };
+
+    // If minDistance is Infinity, and miniDistanceTagID is 0, it means there is no path to reach the rest of the tags 
+    // (No any other connected nodes); Return the results
+    if(minDistance == Infinity && minDistanceTagID == 0){
+      console.log("No path to reach the rest of the tags");
+      return {Distance, LeastCostPath};
+    };
+
     // Add the tag with the minimum distance to the least cost path
     LeastCostPath.push(minDistanceTagID);
     // Update the distance of the neighbors of the tag with the minimum distance
     const minDistanceTag = await Tag.find({tagID: minDistanceTagID});
+    console.log(minDistanceTag);
     // Get ID of all neighbors of the tag with the minimum distance
     const minDistanceTagNeighborsID = minDistanceTag[0].neighbors;
-    for (let k = 0; k < tagIDArray.length; k++){
+    for (var i = 0; i < tagIDArray.length; i++){
       // For tag that is not in the least cost path
-      if (!LeastCostPath.includes(tagIDArray[k])){
+      if (!LeastCostPath.includes(tagIDArray[i])){
         // Update the distance of the neighbors of the tag with the minimum distance
-        if (minDistanceTagNeighborsID.includes(tagIDArray[k])) {
+        if (minDistanceTagNeighborsID.includes(tagIDArray[i])) {
           // New distance is either the old distance or the distance from the start tag to the tag with the minimum distance plus 1
           // ! Cost of each edge is assumed to be 1
-          if (Distance.get(tagIDArray[k]) > minDistance + 1){
+          if (Distance.get(tagIDArray[i]) > minDistance + 1){
             // ! Cost of each edge is assumed to be 1
-            Distance.set(tagIDArray[k], minDistance + 1);
+            Distance.set(tagIDArray[i], minDistance + 1);
           };
         };
       };
@@ -216,6 +224,8 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
       const tagIDs = section[0].tagIDs;
   
       // Calculate the relevance score
+      // The relevance score is the sum of the inverse of the distance between the tag and the decisive tag
+      // ! Notice: If some tag is not reachable from the decisive tag, the distance between them is Infinity; 1/(Infinity+1) = 0
       let relevanceScore = 0;
       for (let j = 0; j < tagIDs.length; j++){
         relevanceScore += 1/(DistanceMap.get(tagIDs[j])+1);
@@ -304,7 +314,6 @@ async function sortSections(sectionRankScoreMap){
 };
 
 
-
 // * Main function
 async function main() {
   // ! #### Map Search Word to Decisive Tags #####
@@ -345,6 +354,8 @@ async function main() {
   // ! #### Rank Sections based on RankScore ####
   const rankedSectionIDArray = await sortSections(rankScoreMap);
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
+
+  mongoose.disconnect();
 };
 
 main();
