@@ -4,7 +4,8 @@
 
 #### `./algorithm`
 
-- `relevanceScoreSearch.js`: Implement the function of generating ranked section results based on search key words
+- `relevanceScoreSearch.js`: Implement the function of generating ranked section results based on search key words; the search score is purely based on distance between tags; Bench mark algorithm.
+- `importanceWeightedRelevanceScoreSearch.js`: Use the Google PageRank importance score as the weight to compute importance weighted relevance score; An modified algorithm based on `relevanceScoreSearch.js`.
 - `recommend.js`: Implement the function of recommending tags given certain decisive tags
 
 #### `./database`
@@ -169,13 +170,15 @@
     bash createDB.sh
     ```
   
-  - Make a search. Run the following command in any shell.
+  - Make a search. Run the following command in any shell from the project root directory.
   
     ```shell
-    node ./algorithm/search.js
+    node ./algorithm/relevanceScoreSearch.js
+    # or
+    node ./algorithm/importanceWeightedRelevanceScoreSearch.js
     ```
   
-  - Make recommendation. Run the following command in any shell.
+  - Make recommendation. Run the following command in any shell from the project root directory.
   
     ```shell
     node ./algorithm/recommend.js
