@@ -51,10 +51,19 @@ async function Dijkstra(tagIDArray, startTagID){
         };
       };
     };
+
+    // If minDistance is Infinity, and miniDistanceTagID is 0, it means there is no path to reach the rest of the tags 
+    // (No any other connected nodes); Return the results
+    if(minDistance == Infinity && minDistanceTagID == 0){
+      console.log("No path to reach the rest of the tags");
+      return {Distance, LeastCostPath};
+    }
+
     // Add the tag with the minimum distance to the least cost path
     LeastCostPath.push(minDistanceTagID);
     // Update the distance of the neighbors of the tag with the minimum distance
     const minDistanceTag = await Tag.find({tagID: minDistanceTagID});
+    console.log(minDistanceTag);
     // Get ID of all neighbors of the tag with the minimum distance
     const minDistanceTagNeighborsID = minDistanceTag[0].neighbors;
     for (var i = 0; i < tagIDArray.length; i++){
@@ -83,9 +92,11 @@ async function main() {
   let tagIDArray = Array.from({ length: tagCount }, (value, index) => index + 1);
   console.log(tagIDArray);
 
-  const Result = await Dijkstra(tagIDArray, 1);
+  const Result = await Dijkstra(tagIDArray, 88);
   console.log(Result.Distance);
   console.log(Result.LeastCostPath);
+
+  mongoose.disconnect();
 };
 
 main();

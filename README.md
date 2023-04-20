@@ -4,17 +4,18 @@
 
 #### `./algorithm`
 
-- `search.js`: Implement the function of generating ranked section results based on search key words
+- `relevanceScoreSearch.js`: Implement the function of generating ranked section results based on search key words
 - `recommend.js`: Implement the function of recommending tags given certain decisive tags
 
 #### `./database`
 
 - `./database/courseDB`: Formal database for the application; Create MongoDB database named `courseDB`; define and insert all tags, pages, and sections into the database
   - `tag.js`: Define and insert all tags
+  - `chapter1.js`: Define and insert pages and sections of chapter 1
   - `chapter2.js`: Define and insert pages and sections of chapter 2
   - `chapter4.js`: Define and insert pages and sections of chapter 3
   - `createDB.sh`: bash script to run multiple commands at once; Run this script to create the whole database in one shot
-
+  
 - `./database/tagGraphDB`: Test and develop tag graph related functions
   - `tagGraph.js`: Create MongoDB database named `tagGraphDB`; define and insert all tags into the database; tags are designed to represent node in a tag graph
   - `shortestDistanceBetweenTags.js`: Dijkstra algorithm to calculate shortest distance between tag nodes
@@ -56,7 +57,7 @@
   - Determine the `DecisiveTag` based on tag occurrence frequency (top 3 most frequent)
     - We consider the `DecisiveTag` as the most relevant tag to the search key words
   - Alternative: Classification Machine Learning Model
-- Compute Relevance Score
+- Search Algorithm Approach 1: Relevance Score
 
   - Build a graph based on tags, each tag is a node in the graph
 
@@ -65,9 +66,9 @@
   - Rank these section based on a Relevance Score (towards the `DecisiveTag`, which represents the search key word)
 
     - For a section that contain `DecisiveTag`, it may also contain other tags, we calculate a distance between the `DecisiveTag` and other tags
-    
+
     - **Key idea**: The closer the other tag A is to the `DecisiveTag`, the more relevant tag A is to the `DecisiveTag`
-    
+
     - The shortest distance between tag A and `DecisiveTag` is $Distance(A,DecisiveTag)$
       - The shortest distance can be calculate with the **Dijkstra Algorithm**
       - Distance from tag A to tag A (itself) is 0
@@ -78,16 +79,21 @@
       - The relevance score between `DecisiveTag`  and `DecisiveTag` is 1, the value correspond to the formula above
       
     - For a section that contain N tags (include `DecisiveTag`), we denote the set of tags as `T`, the relevance score (in regard to `DecisiveTag`) of the section is
-    
+
       - $SectionRelevanceScore(DecisiveTag) = \frac{1}{N}\sum_{i\in{T}}{RelevanceScore(i,DecisiveTag)} = \frac{1}{N}\sum_{i\in{T}}\frac{1}{Distance(i,DecisiveTag)+1}$
-    
+
     - For the case of multiple `DecisiveTag`, we denote the set of `DecisiveTag` as `D`, the section relevance score is:
-    
+
       - $TotalWeightedFrequency(D) = \sum_{i\in{D}} WeightedFrequency(i)$
-    
+
       - $SectionRelevanceScore(D)=\sum_{i\in{D}} \frac{WeightedFrequency(i)}{TotalWeightedFrequncy(D)} \times SectionRelevanceScore(i)$
-    
+
     - Optional: Then normalized the `SectionRelevanceScore` to the value such their sum equals 1
+
+- Search Algorithm Approach 2: Importance Weighted Relevance Score
+  - When computing the relevance score of any tag A to the decisive tag, we multiply the importance score of the tag A as weight
+  - To decide the search results, we consider both the importance of the content and the relevance of the content
+
 - User Feedback
 
   - User can provide a binary feedback on the search results of each section (Helpful or Not Helpful)
@@ -148,25 +154,30 @@
     npm install
     ```
 
-- Run code
+- To run code, run the following command from the root directory of the project.
 
-  - Create database and insert data. Run the following command in **Git Bash Shell**
+  - Create database and insert data. 
 
+    - If `courseDB` already exists in your local database, delete it first before reinserting all data. 
+  
+    - Go to `./database/courseDB` directory in **Git Bash Shell**
+
+    - Run the following command in **Git Bash Shell**
+
+  
     ```shell
-    bash ./database/courseDB/createDB.sh
+    bash createDB.sh
     ```
-
+  
   - Make a search. Run the following command in any shell.
-
+  
     ```shell
     node ./algorithm/search.js
     ```
-
+  
   - Make recommendation. Run the following command in any shell.
-
+  
     ```shell
     node ./algorithm/recommend.js
     ```
-
-    
 
