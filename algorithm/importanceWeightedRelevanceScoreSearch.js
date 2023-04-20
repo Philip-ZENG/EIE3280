@@ -1,10 +1,11 @@
 /**
  * @description
- * * Given a search string, return a list of sections that are relevant to the search string:
- * * Use only relevance score to determine the relevance of a section
+ * * Given a search string, return a list of sections that are relevant to the search string
+ * * Use only the importance score weighted relevance score to determine the relevance of a section
  */
 
 const mongoose = require('mongoose');
+const mathjs = require('mathjs');
 
 mongoose.connect("mongodb://127.0.0.1:27017/courseDB");
 
@@ -89,7 +90,7 @@ async function findSections(pages, occurrenceWeight, sectionMap, tagMap) {
 
 // ! ############### Compute Relevance Score ###############
 
-// * Step 3: Given the tagIDCountMap, determine the tagIDs that has the top `decisiveTagNumber` of highest count value
+// * Step 1: Given the tagIDCountMap, determine the tagIDs that has the top `decisiveTagNumber` of highest count value
 //  * return a new Map object that contains the top `decisiveTagNumber` of tagIDs (key) and their count value (value)
 function findDecisiveTag(tagMap, decisiveTagNumber) {
   // Convert the Map to an array of key-value pairs and sort by count value in descending order
@@ -99,7 +100,7 @@ function findDecisiveTag(tagMap, decisiveTagNumber) {
   return decisiveMap;
 };
 
-// * Step 4: Given the decisiveMap, find section IDs that contain these tags
+// * Step 2: Given the decisiveMap, find section IDs that contain these tags
 //  * return an array of sectionIDs
 async function findRelevantSections(decisiveMap) {
   // Create an array to store the sectionID that contains the tags
@@ -120,7 +121,116 @@ async function findRelevantSections(decisiveMap) {
   return sectionIDArray;
 };
 
-// * Step 5-1: Calculate shortest distance between tags using Dijkstra's algorithm
+// * Step 3: Calculate importance score of each tag
+// * Step 3-1: compute the first matrix, H matrix in Google PageRank algorithm
+async function get_H_Matrix(){
+  // get all tags
+  const allTags = await Tag.find();
+  // get the number of tags
+  const numTags = allTags.length;
+  // initialize the H matrix
+  const H = new Array(numTags);
+  for (let i = 0; i < numTags; i++){
+    H[i] = new Array(numTags);
+    for (let j = 0; j < numTags; j++){
+      H[i][j] = 0;
+    }
+  }
+
+  // fill the H matrix
+  for (let i = 0; i < numTags; i++){
+    const neighbors = allTags[i].neighbors;
+    const numNeighbors = neighbors.length;
+    for (let j = 0; j < numNeighbors; j++){
+      const neighborID = neighbors[j];
+      // tagID starts from 1, but array index starts from 0
+      H[i][neighborID-1] = 1 / numNeighbors;
+    };
+  };
+  return mathjs.matrix(H);
+};
+
+// * Step 3-2: compute the second matrix, H bar matrix in Google PageRank algorithm
+async function get_H_bar_Matrix(H){
+  // since our tag graph is a undirected graph, so there is no dangling nodes (node with no out edges)
+  // so we can just use the H matrix as the H bar matrix
+  return H;
+};
+
+// * Step 3-3: compute the third matrix, Google Matrix in Google PageRank algorithm
+async function get_Google_Matrix(H_bar, theta){
+  const dimensions = H_bar._size;
+  const numTags = dimensions[0];
+  const oneMatrix = mathjs.ones(dimensions);
+  const randomizationMatrix = mathjs.multiply(oneMatrix, (1-theta)*(1/numTags));
+  const H_barTimesTheta = mathjs.multiply(H_bar, theta);
+  const GoogleMatrix = mathjs.add(randomizationMatrix, H_barTimesTheta);
+  return GoogleMatrix;
+};
+
+// * Step 3-4: compute the PageRank vector iteratively
+async function get_PageRank_Vector(GoogleMatrix, epsilon){
+  // initialize the PageRank vector
+  const dimensions = GoogleMatrix._size;
+  const numTags = dimensions[0];
+  var PageRankVector = mathjs.ones(numTags);
+  // Initialize the PageRank vector to be a vector of 1/numTags
+  PageRankVector = mathjs.multiply(PageRankVector, 1/numTags);
+  // initialize the previous PageRank vector
+  var previousPageRankVector = mathjs.zeros(numTags);
+  // initialize the difference between the current PageRank vector and the previous PageRank vector
+  var difference = mathjs.subtract(PageRankVector, previousPageRankVector);
+
+  // initialize the number of iterations
+  var numIterations = 0;
+  // iterate until the difference is smaller than epsilon
+  while (mathjs.norm(difference) > epsilon){
+    // update the previous PageRank vector
+    previousPageRankVector = PageRankVector;
+    // update the current PageRank vector
+    PageRankVector = mathjs.multiply(PageRankVector, GoogleMatrix);
+    // update the difference
+    difference = mathjs.subtract(PageRankVector, previousPageRankVector);
+    // update the number of iterations
+    numIterations++;
+  };
+
+  console.log("Number of iterations: " + numIterations);
+
+  return PageRankVector;
+};
+
+// * Step 3-5: compute the importance score of each tag
+async function calculateTagImportanceScore(){
+  const H = await get_H_Matrix();
+  // console.log(H);
+
+  const H_bar = await get_H_bar_Matrix(H);
+  // console.log(H_bar);
+
+  const GoogleMatrix = await get_Google_Matrix(H_bar, 0.85);
+  // console.log(GoogleMatrix);
+
+  const PageRankVector = await get_PageRank_Vector(GoogleMatrix, 0.0001);
+  console.log(PageRankVector);
+
+  // the importance score vector (pageRank vector) is small, so we may need to scale it up
+  // const scaledPageRankVector = mathjs.multiply(PageRankVector, 2);
+  // console.log(scaledPageRankVector);
+
+  // convert the pageRank vector to a map
+  const tagCount = await Tag.countDocuments();
+  var tagIDArray = Array.from({ length: tagCount }, (value, index) => index + 1);
+  var tagImportanceScoreMap = new Map();
+  for (let i = 0; i < tagCount; i++){
+    tagImportanceScoreMap.set(tagIDArray[i], PageRankVector._data[i]);
+  };
+
+  return tagImportanceScoreMap;
+};
+
+
+// * Step 4: Calculate shortest distance between tags using Dijkstra's algorithm
 // Use Dijkstra's algorithm to calculate the shortest distance between two tags, return the distance
 // All the tags are represented by its tag ID
 // ! If the cost of each edge is not a constant number, the edge cost should be stored in the database
@@ -192,7 +302,9 @@ async function Dijkstra(tagIDArray, startTagID){
   return {Distance, LeastCostPath};
 };
 
-// * Step 5-2: Calculate the relevance score of each section
+// * Step 5: Calculate the importance score weighted relevance score of each section
+// TODO: Modify this to use importance score as weight to calculate relevance score
+
 async function calculateRelevanceScore(sectionIDArray, decisiveMap){
   // Prepare for Dijkstra algorithm
   const tagCount = await Tag.countDocuments();
@@ -205,6 +317,8 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
 
   // Create a Map to store the sectionID (key) and the relevance score (value)
   var sectionRelevanceScoreMap = new Map();
+
+  const tagImportanceScoreMap = await calculateTagImportanceScore();
   
   // ! This works even when multiple decisive tag is used
   // Iterate trough decisiveTagIDArray
@@ -226,10 +340,11 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
   
       // Calculate the relevance score
       // The relevance score is the sum of the inverse of the distance between the tag and the decisive tag
+      // * Use importance score as weight to calculate relevance score
       // ! Notice: If some tag is not reachable from the decisive tag, the distance between them is Infinity; 1/(Infinity+1) = 0
       let relevanceScore = 0;
       for (let j = 0; j < tagIDs.length; j++){
-        relevanceScore += 1/(DistanceMap.get(tagIDs[j])+1);
+        relevanceScore += 10 * tagImportanceScoreMap.get(tagIDs[j]) * 1/(DistanceMap.get(tagIDs[j])+1);
       };
 
       // For a decisive map with more than 1 tag (key), we need to assign each tag's influence such that it is proportional to the weighted frequecy of the tag
@@ -252,7 +367,7 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
 
 
 // ! ############### User Feedback Mechanism & RankScore Calculation ###############
-// * Step 6-1: Update the feedback score of each section
+// * Step 1: Update the feedback score of each section
 async function updateFeedbackScore(sectionID, isHelpful){
   var result = await Section.find({sectionID: sectionID}).select({feedbackScore:1, _id:0});
   var feedbackScore = result[0].feedbackScore;
@@ -279,7 +394,7 @@ async function generateRandomFeedback(sectionRelevanceScoreMap, numOfFeedback) {
   };
 };
 
-// * Step 6-2: Calculate the rank score of each section, rank score = relevance score + feedback score
+// * Step 2: Calculate the rank score of each section, rank score = relevance score + feedback score
 async function calculateRankScore(sectionRelevanceScoreMap){
   // Create a Map to store the sectionID (key) and the rank score (value)
   var sectionRankScoreMap = new Map();
@@ -305,7 +420,7 @@ async function calculateRankScore(sectionRelevanceScoreMap){
 };
 
 // ! ############### Rank Sections based on RankScore ###############
-// * Step 7: Sort the sections by rank score in descending order
+// * Step 1: Sort the sections by rank score in descending order
 async function sortSections(sectionRankScoreMap){
   // Create an array to store the sectionID
   var rankedSectionIDArray = Array.from(sectionRankScoreMap.keys());
