@@ -318,7 +318,7 @@ async function sortSections(sectionRankScoreMap){
 // * Main function
 async function main() {
   // ! #### Map Search Word to Decisive Tags #####
-  const pages = await findPages("Google");
+  const pages = await findPages("Pagerank");
   console.log("contentMappedPages: ");
   console.log(pages.contentMappedPages);
   console.log("titleMappedPages: ");
