@@ -58,7 +58,7 @@
   - Determine the `DecisiveTag` based on tag occurrence frequency (top 3 most frequent)
     - We consider the `DecisiveTag` as the most relevant tag to the search key words
   - Alternative: Classification Machine Learning Model
-- Search Algorithm Approach 1: Relevance Score
+- Search Algorithm Approach 1: Relevance ScoreRE
 
   - Build a graph based on tags, each tag is a node in the graph
 

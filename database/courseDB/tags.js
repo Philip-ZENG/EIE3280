@@ -700,7 +700,7 @@ const Adjacency = new Tag({
 
 const Incidence = new Tag({
   tagID: 114,
-  tagName: "Degree",
+  tagName: "Incidence",
   neighbors: [111,113,115]
 });
 
