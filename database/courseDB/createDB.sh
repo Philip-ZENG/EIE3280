@@ -7,5 +7,7 @@ node chapter1.js
 node chapter2.js
 node chapter3.js
 node chapter4.js
+node chapter5.js
+node chapter6.js
 node chapter7.js
 node chapter8.js
