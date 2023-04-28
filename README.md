@@ -157,18 +157,37 @@
 
 - To run code, run the following command from the root directory of the project.
 
-  - Create database and insert data. 
+  - Clear database
 
+    - Start the MongoDB shell by running the following code in any terminal
+  
+      ```shell
+      mongosh
+      ```
+
+    - Switch to the `courseDB` database, run the following command in MongoDB shell
+  
+      ```SHELL
+      use courseDB
+      ```
+  
+    - Clear the database (when we have data update, we need to clear database and reinsert data to database)
+  
+      ```shell
+      db.dropDatabase()
+      ```
+  
+  - Create database and insert data. 
+  
     - If `courseDB` already exists in your local database, delete it first before reinserting all data. 
   
     - Go to `./database/courseDB` directory in **Git Bash Shell**
-
-    - Run the following command in **Git Bash Shell**
-
   
-    ```shell
-    bash createDB.sh
-    ```
+    - Run the following command in **Git Bash Shell**
+  
+      ```shell
+      bash createDB.sh
+      ```
   
   - Make a search. Run the following command in any shell from the project root directory.
   

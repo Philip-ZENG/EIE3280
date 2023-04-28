@@ -458,6 +458,7 @@ const Challange = new Tag({
   neighbors: [74,75]
 });
 
+// Naming conflict
 const Page = new Tag({
   tagID: 74,
   tagName: "Page",
