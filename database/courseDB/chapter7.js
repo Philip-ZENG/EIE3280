@@ -194,9 +194,8 @@ const page703 = new Page({
   {Resolution of opinion in Wikipedia}\
   {Dependence of opinion}\
   {Theory-practice gap}\
-  Network effect, positive or negative\
-  Externality\
-  Information dependence"
+  {Network effect, positive or negative Externality}\
+  {Information dependence}"
 });
 
 const page704 = new Page({
@@ -214,8 +213,8 @@ const page705 = new Page({
   title: "4 ways to find a video",
   content: "{Web search}\
   {Referral through tweet or email}\
-  Subscription to channel\
-  Browsing through recommendation"
+  {Subscription to channel}\
+  {Browsing through recommendation}"
 });
 
 const page706 = new Page({
@@ -252,12 +251,12 @@ const page708 = new Page({
   pageID: 708,
   title: "Tipping",
   content: "{Groupon}\
-  Founded in 2008\
-  By 2010: generated over $300 million annual revenue\
-  Value of crowds\
-  Advertisement and returning customers\
-  Power of crowds\
-  Need a threshold number of people within 24 hours"
+  {Founded in 2008}\
+  {By 2010: generated over $300 million annual revenue}\
+  {Value of crowds}\
+  {Advertisement and returning customers}\
+  {Power of crowds}\
+  {Need a threshold number of people within 24 hours}"
 });
 
 const page709 = new Page({
@@ -265,21 +264,21 @@ const page709 = new Page({
   title: "Influential power",
   content: "{Intrinsic value}\
   {Network effect}\
-  Information (e.g., information cascade)\
-  Valuation (e.g., fax)\
-  Population based model this lecture\
-  Deterministic interaction\
-  Random interaction\
-  Topology based model next lecture"
+  {Information (e.g., information cascade)}\
+  {Valuation (e.g., fax)}\
+  {Population based model this lecture}\
+  {Deterministic interaction}\
+  {Random interaction}\
+  {Topology based model next lecture}"
 });
 
 const page710 = new Page({
   pageID: 710,
   title: "Questions",
-  content: "Distribution of nodes in different states at equilibrium\
-  Amount of time it takes to reach equilibrium\
-  Transient behavior before equilibrium\
-  Which model to use?"
+  content: "{Distribution of nodes in different states at equilibrium}\
+  {Amount of time it takes to reach equilibrium}\
+  {Transient behavior before equilibrium}\
+  {Which model to use?}"
 });
 
 const page711 = new Page({
@@ -288,7 +287,7 @@ const page711 = new Page({
   content: "{Deterministic-interaction Model}\
   {Random-interaction Model}\
   {Population-based}\
-  Topology-dependent"
+  {Topology-dependent}"
 });
 
 const section702 = new Section({
@@ -306,11 +305,11 @@ const page712 = new Page({
   pageID: 712,
   title: "An experiment",
   content: "{Salganik Dodds Watts 2005}\
-  14341 participants\
-  48 songs from unknown bands\
-  Two factors\
-  Ordering: random or descending order\
-  Download number: shown or hidden"
+  {14341 participants}\
+  {48 songs from unknown bands}\
+  {Two factors}\
+  {Ordering: random or descending order}\
+  {Download number: shown or hidden}"
 });
 
 const page713 = new Page({
@@ -337,8 +336,7 @@ const page715 = new Page({
   {Each person}\
   {Obtains a private signal: with probability p >equals to the correct}\
   {number, and probability 1 - p otherwise}\
-  Releases a public signal: writes down his best guess (0 or 1) of the\
-  correct number c on the whiteboard"
+  {Releases a public signal: writes down his best guess (0 or 1) of the correct number c on the whiteboard}"
 });
 
 const page716 = new Page({
@@ -353,7 +351,7 @@ const page717 = new Page({
   content: "{By observing public signal Y1, second person derives private signal X1}\
   {He needs to determine Y2 based on X1 and X2}\
   {If X2 = X1, then Y2 = X2 = X1.}\
-  If X2 ̸= X1, then he flips a fair coin to determine Y2."
+  {If X2 ̸= X1, then he flips a fair coin to determine Y2.}"
 });
 
 const page718 = new Page({
@@ -378,10 +376,10 @@ const section703 = new Section({
 const page719 = new Page({
   pageID: 719,
   title: "Bayesian thinking",
-  content: "What's the probability P [c |(Y1, Y2, X3)] = P [1 |(1, 1, 0)]?\
-  If the probability > 0.5: ignore the private signal\
-  If the probability < 0.5: ignore the public signal\
-  If the probability = 0.5: flip a coin"
+  content: "{What's the probability P [c |(Y1, Y2, X3)] = P [1 |(1, 1, 0)]?}\
+  {If the probability > 0.5: ignore the private signal}\
+  {If the probability < 0.5: ignore the public signal}\
+  {If the probability = 0.5: flip a coin}"
 });
 
 const page720 = new Page({
@@ -411,7 +409,7 @@ const page723 = new Page({
   title: "Chance of cascade",
   content: "{The probability of no cascade}\
   {p(1 - p)}\
-  Probup = Probdown"
+  {Probup = Probdown}"
 });
 
 const page724 = new Page({
@@ -419,9 +417,9 @@ const page724 = new Page({
   title: "How about running longer time?",
   content: "{Previous calculation focuses on cascade after the 2nd user person}\
   {What about after 2n users?}\
-  No cascade: Y1 ̸= Y2, Y3 ̸= Y4, . . . , Y2n-1 ̸= Y2n\
-  Probno = (p(1 - p))n\
-  What happen as n → ∞?"
+  {No cascade: Y1 ̸= Y2, Y3 ̸= Y4, . . . , Y2n-1 ̸= Y2n}\
+  {Probno = (p(1 - p))n}\
+  {What happen as n → ∞?}"
 });
 
 const section704 = new Section({
@@ -441,7 +439,7 @@ const page725 = new Page({
   content: "{Can be forever}\
   {Unless with some kind of disturbance, e.g., releasing a private signal}\
   {1, 1, . . . , 1(0 : private signal also out), ?(another 0 private signal)}\
-  {Emperor’s new clothes}"
+  {Emperor's new clothes}"
 });
 
 const page726 = new Page({
@@ -464,12 +462,9 @@ const page727 = new Page({
 const page728 = new Page({
   pageID: 728,
   title: "Assume correct number is 1",
-  content: "{Probno = P(X1 = 0, X2 = 1, F = 1) + P(X1 = 1, X2 = 0, F = 0)}\
-  {= p(1 - p),}\
-  {Probup = P(X1 = 1, X2 = 1) + P(X1 = 1, X2 = 0, F = 1)}\
-  {= p(1 + p)/2,}\
-  Probdown = P(X1 = 0, X2 = 0) + P(X1 = 0, X2 = 1, F = 0)\
-  =(1-p)(2-p)/2"
+  content: "{Probno = P(X1 = 0, X2 = 1, F = 1) + P(X1 = 1, X2 = 0, F = 0) = p(1 - p),}\
+  {Probup = P(X1 = 1, X2 = 1) + P(X1 = 1, X2 = 0, F = 1) = p(1 + p)/2,}\
+  {Probdown = P(X1 = 0, X2 = 0) + P(X1 = 0, X2 = 1, F = 0) = (1-p)(2-p)/2}"
 });
 
 const page729 = new Page({
@@ -482,8 +477,8 @@ const page729 = new Page({
 const page730 = new Page({
   pageID: 730,
   title: "Observations",
-  content: "For a fixed p, a larger n does not drive Probcorrect to 1.\
-  Dependence of decision destroys the wisdom of crowds"
+  content: "{For a fixed p, a larger n does not drive Probcorrect to 1.}\
+  {Dependence of decision destroys the wisdom of crowds}"
 });
 
 const section705 = new Section({
@@ -501,18 +496,18 @@ const page731 = new Page({
   pageID: 731,
   title: "Tipping",
   content: "{Positive externality (in a single time slot)}\
-  Positive feedback (over time)\
-  Example: Should I buy an iPad?\
-  Adoption percentage p\
-  Influence function f(p)"
+  {Positive feedback (over time)}\
+  {Example: Should I buy an iPad?}\
+  {Adoption percentage p}\
+  {Influence function f(p)}"
 });
 
 const page732 = new Page({
   pageID: 732,
   title: "Trajectory",
   content: "{p[t + 1] = f(p[t])}\
-  One zig-zag corresponds to one iteration.\
-  Different shapes lead to different types of equilibrium."
+  {One zig-zag corresponds to one iteration.}\
+  {Different shapes lead to different types of equilibrium.}"
 });
 
 const page733 = new Page({

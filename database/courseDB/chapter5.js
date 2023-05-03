@@ -204,9 +204,9 @@ const Coin = new Tag({
 const page502 = new Page({
   pageID: 502,
   title: "More on recommendation",
-  content: "Google PageRank: a common list for all users\
-  Netflix collaborative filtering: a separate list for each user\
-  Amazon rating: aggregation of a vector of rating scores into a scalar"
+  content: "{Google PageRank: a common list for all users}\
+  {Netflix collaborative filtering: a separate list for each user}\
+  {Amazon rating: aggregation of a vector of rating scores into a scalar}"
 });
 
 const page503 = new Page({
@@ -218,9 +218,9 @@ const page503 = new Page({
 const page504 = new Page({
   pageID: 504,
   title: "Review system",
-  content: "Rating: numerical (often integers)\
-  Review: text\
-  Reviews of review: can be simple binary"
+  content: "{Rating: numerical (often integers)}\
+  {Review: text}\
+  {Reviews of review: can be simple binary}"
 });
 
 const page505 = new Page({
@@ -238,10 +238,10 @@ const page506 = new Page({
 const page507 = new Page({
   pageID: 507,
   title: "Challenges",
-  content: "Gatekeeper: who can enter the reviews?\
-  Scale: 1 - 7 or -5 - 5?\
-  Number of reviews: How big is big enough?\
-  How do you compare across products?"
+  content: "{Gatekeeper: who can enter the reviews?}\
+  {Scale: 1 - 7 or -5 - 5?}\
+  {Number of reviews: How big is big enough?}\
+  {How do you compare across products?}"
 });
 
 
@@ -266,54 +266,54 @@ const section501 = new Section({
 const page509 = new Page({
   pageID: 509,
   title: "Galton's experiment",
-  content: "1906\
-  A farm in Plymouth, UK\
-  787 guesses of an ox's weight\
-  Average = 1197 pounds\
-  Actual = 1198 pounds\
-  A wisdom of crowds?"
+  content: "{1906}\
+  {A farm in Plymouth, UK}\
+  {787 guesses of an ox's weight}\
+  {Average = 1197 pounds}\
+  {Actual = 1198 pounds}\
+  {A wisdom of crowds?}"
 });
 
 const page510 = new Page({
   pageID: 510,
   title: "3 key factors",
-  content: "The task has a correct and objective answer\
-  Unbiased and independent estimates\
-  Enough people participating"
+  content: "{The task has a correct and objective answer}\
+  {Unbiased and independent estimates}\
+  {Enough people participating}"
 });
 
 const page511 = new Page({
   pageID: 511,
   title: "Help",
-  content: "Natural language processing\
-  Statistics\
-  Signal processing\
-  Voting"
+  content: "{Natural language processing}\
+  {Statistics}\
+  {Signal processing}\
+  {Voting}"
 });
 
 const page512 = new Page({
   pageID: 512,
   title: "Example",
-  content: "4 stars (121 reviews) vs. 4.5 stars (55 reviews)"
+  content: "{4 stars (121 reviews) vs. 4.5 stars (55 reviews)}"
 });
 
 const page513 = new Page({
   pageID: 513,
   title: "Example",
-  content: "Most helpful vs. most recent"
+  content: "{Most helpful vs. most recent}"
 });
 
 const page514 = new Page({
   pageID: 514,
   title: "Example",
-  content: "Time series"
+  content: "{Time series}"
 });
 
 const page515 = new Page({
   pageID: 515,
   title: "Two key questions",
-  content: "When/why can we trust an average rating?\
-  How to rank different products based on their ratings?"
+  content: "{When/why can we trust an average rating?}\
+  {How to rank different products based on their ratings?}"
 });
 
 
@@ -336,65 +336,61 @@ const page516 = new Page({
 const page517 = new Page({
   pageID: 517,
   title: "Averaging a crowd",
-  content: "Galton experiment example\
-  N users indexed by i = 1, . . . , N\
-  The correct (but unknown) answer is x\
-  Each user i has an estimation\
-  yi(x) = x + ϵi(x)\
-  ▶ Unbiased error: Ex[ϵi(x)] = 0, for each user i\
-  ▶ Independent error: ϵi(x) is independent of ϵj(x) for any i ̸= j"
+  content: "{Galton experiment example}\
+  {N users indexed by i = 1, . . . , N}\
+  {The correct (but unknown) answer is x}\
+  {Each user i has an estimation}\
+  {yi(x) = x + ϵi(x)}\
+  {Unbiased error: Ex[ϵi(x)] = 0, for each user i}\
+  {Independent error: ϵi(x) is independent of ϵj(x) for any i ̸= j}"
 });
 
 const page518 = new Page({
   pageID: 518,
   title: "Average of errors",
-  content: "The error of user i is ϵi(x)\
-  We consider MSE (mean square error)\
- Hence the (expected, mean-squared) error of user i is Ex[ϵ\
-  The expected Average of Errors (AE) is"
+  content: "{The error of user i is ϵi(x)}\
+  {We consider MSE (mean square error)}\
+  {Hence the (expected, mean-squared) error of user i is Ex[ϵ]}\
+  {The expected Average of Errors (AE) is}"
 });
 
 const page519 = new Page({
   pageID: 519,
   title: "Error of the average",
-  content: "What if we take the average first, and then look at the error?\
-  Average of the estimation: 1\
-  Error of the average estimation:\
-  The expected Error of the Average (EA) is\
-  EEA = Ex"
+  content: "{What if we take the average first, and then look at the error?}\
+  {Average of the estimation: 1}\
+  {Error of the average estimation:}\
+  {The expected Error of the Average (EA) is EEA = Ex}"
 });
 
 const page520 = new Page({
   pageID: 520,
   title: "AE vs. EA",
-  content: "The Average of Errors (AE) is\
-  EAE =\
-  The Error of the Average (EA) is\
-  EEA ="
+  content: "{The Average of Errors (AE) is} EAE =}\
+  {The Error of the Average (EA) is EEA =}"
 });
 
 const page521 = new Page({
   pageID: 521,
   title: "AE vs. EA",
-  content: "{An example of two users:Unbiased & independent errors: Ex [2ϵ1ϵ2] = 2Ex[ϵ1] Ex[ϵ2] = 0.\
-    (x)]}"
+  content: "{An example of two users:Unbiased & independent errors: Ex [2ϵ1ϵ2] = 2Ex[ϵ1] Ex[ϵ2] = 0. (x)]}"
 });
 
 const page522 = new Page({
   pageID: 522,
   title: "Wisdom of crowds",
-  content: "Hence\
-  1/N: wisdom of crowds\
-  ▶ Averaging the estimation over N users reducing the error to 1/N"
+  content: "{Hence}\
+  {1/N: wisdom of crowds}\
+  {Averaging the estimation over N users reducing the error to 1/N}"
 });
 
 const page523 = new Page({
   pageID: 523,
   title: "What if completely dependent?",
-  content: "All the estimations are the same: yi(x) = yj(x)\
-  The average of the estimation will be the same as each estimation\
-  EEA = EAE\
-  What about partial dependance?"
+  content: "{All the estimations are the same: yi(x) = yj(x)}\
+  {The average of the estimation will be the same as each estimation}\
+  {EEA = EAE}\
+  {What about partial dependance?}"
 });
 
 const page524 = new Page({
@@ -406,23 +402,20 @@ const page524 = new Page({
 const page525 = new Page({
   pageID: 525,
   title: "Bayesian estimation: two questions",
-  content: "Question 1\
-  ▶ If you have performed an experiment n times, and you have observed\
-  the outcome of “1” s times. What is the probability of seeing an\
-  outcome of 1 in the next experiment?"
+  content: "{Question 1}\
+  {If you have performed an experiment n times, and you have observed the outcome of “1” s times.}\
+  {What is the probability of seeing an outcome of 1 in the next experiment?}"
 });
 
 const page526 = new Page({
   pageID: 526,
   title: "Bayesian estimation: two questions",
-  content: "Question 1\
-  ▶ If you have performed an experiment n times, and you have observed\
-  the outcome of “1” s times. What is the probability of seeing an\
-  outcome of 1 in the next experiment?\
-  Question 2\
-  ▶ If you are tossing a coin, with head meaning “1” and tail meaning “0”.\
-  If you have seen s times of “1” out of n experiments, what is the\
-  probability of seeing “1” in the next toss?"
+  content: "{Question 1}\
+  {If you have performed an experiment n times, and you have observed the outcome of “1” s times.}\
+  {What is the probability of seeing an outcome of 1 in the next experiment?}\
+  {Question 2}\
+  {If you are tossing a coin, with head meaning “1” and tail meaning “0”.}\
+  {If you have seen s times of “1” out of n experiments, what is the probability of seeing “1” in the next toss?}"
 });
 
 
@@ -441,71 +434,61 @@ const section503 = new Section({
 const page527 = new Page({
   pageID: 527,
   title: "Bayesian view",
-  content: "If we know probability p, we can make predication of how often we\
-  will see “1”.\
-  Based on the observations, how to estimate the value of p?"
+  content: "{If we know probability p, we can make predication of how often we will see “1”.}\
+  {Based on the observations, how to estimate the value of p?}"
 });
 
 const page528 = new Page({
-    pageID: 528,
-    title: "Estimating the probability distribution of p",
-    content: "Assume we know the value of p, then the probability of seeing s times\
-    of “1” among n experiments is"
+  pageID: 528,
+  title: "Estimating the probability distribution of p",
+  content: "Assume we know the value of p, then the probability of seeing s times of “1” among n experiments is}"
   });
 
 const page529 = new Page({
-    pageID: 529,
-    title: "Estimating the probability distribution of p",
-    content: "Assume we know the value of p, then the probability of seeing s times\
-    of “1” among n experiments is\
-    Since we do not know the value of p, we would guess that the\
-    probability of p is proportional to the above expression"
+  pageID: 529,
+  title: "Estimating the probability distribution of p",
+  content: "{Assume we know the value of p, then the probability of seeing s times of “1” among n experiments is}\
+  {Since we do not know the value of p, we would guess that the probability of p is proportional to the above expression}"
   });
 
 const page530 = new Page({
-    pageID: 530,
-    title: "Estimating the probability distribution of p",
-    content: "Assume we know the value of p, then the probability of seeing s times\
-    of “1” among n experiments is\
-    Since we do not know the value of p, we would guess that the\
-    probability of p is proportional to the above expression\
-    To obtain a probability distribution function (pdf) of p, we need\
-    to perform proper normalization"
+  pageID: 530,
+  title: "Estimating the probability distribution of p",
+  content: "{Assume we know the value of p, then the probability of seeing s times of “1” among n experiments is}\
+  {Since we do not know the value of p, we would guess that the probability of p is proportional to the above expression}\
+  {To obtain a probability distribution function (pdf) of p, we need to perform proper normalization}"
   });
 
 const page531 = new Page({
-    pageID: 531,
-    title: "Rule of succession",
-    content: "The conditional probability of seeing a “1” given p is just p\
-    The unconditional probability of seeing a “1” would be the\
-    integration over the entire range of p\
-    When n (and hence s) is very large, then s+1\
-     n+2 is approaching s\
-    n"
+  pageID: 531,
+  title: "Rule of succession",
+  content: "{The conditional probability of seeing a “1” given p is just p}\
+  {The unconditional probability of seeing a “1” would be the integration over the entire range of p}\
+  {When n (and hence s) is very large, then s+1, n+2 is approaching s n}"
   });
 
 const page532 = new Page({
-    pageID: 532,
-    title: "Bayesian ranking",
-    content: "We have several brands of products, indexed by i\
-    For each brand i: a total of ni reviews, with an average rating of ri\
-    For all brands: a total of N reviews, with an average rating of R"
+  pageID: 532,
+  title: "Bayesian ranking",
+  content: "{We have several brands of products, indexed by i}\
+  {For each brand i: a total of ni reviews, with an average rating of ri}\
+  {For all brands: a total of N reviews, with an average rating of R}"
   });
 
 const page533 = new Page({
-    pageID: 533,
-    title: "Bayesian ranking",
-    content: "We have several brands of products, indexed by i\
-    For each brand i: a total of ni reviews, with an average rating of ri\
-    For all brands: a total of N reviews, with an average rating of R\
-    The Bayesian rating for brand i is\
-    The larger ni (relative to N), the closer between ri and ri"
+  pageID: 533,
+  title: "Bayesian ranking",
+  content: "{We have several brands of products, indexed by i}\
+  {For each brand i: a total of ni reviews, with an average rating of ri}\
+  {For all brands: a total of N reviews, with an average rating of R}\
+  {The Bayesian rating for brand i is}\
+  {The larger ni (relative to N), the closer between ri and ri}"
   });
 
 const page534 = new Page({
     pageID: 534,
     title: "Bayesian ranking",
-    content: "Example: ni = N/2"
+    content: "{Example: ni = N/2}"
   });
 
 const page535 = new Page({
@@ -529,16 +512,16 @@ const page537 = new Page({
 const page538 = new Page({
   pageID: 538,
   title: "Reverse engineering Amazon",
-  content: "Bayesian adjustment\
-  Recency of view\
-  Reputation score\
-  ▶ www.amazon.com/review/top-reviewers-classic"
+  content: "{Bayesian adjustment}\
+  {Recency of view}\
+  {Reputation score}\
+  {www.amazon.com/review/top-reviewers-classic}"
 });
 
 const page539 = new Page({
   pageID: 539,
   title: "Example",
-  content: "Table 5.4 A list of the top twenty 30 - 34 inch LCD HDTVs on Amazon."
+  content: "{Table 5.4 A list of the top twenty 30 - 34 inch LCD HDTVs on Amazon.}"
 });
 
 const page540 = new Page({
@@ -550,27 +533,27 @@ const page540 = new Page({
 const page541 = new Page({
   pageID: 541,
   title: "Quality of reviews",
-  content: "How many people believe that the “most helpful” reviews are helpful?\
-  When are the “most helpful” reviews?\
-  Any substantial very negative reviews?"
+  content: "{How many people believe that the “most helpful” reviews are helpful?}\
+  {When are the “most helpful” reviews?}\
+  {Any substantial very negative reviews?}"
 });
 
 const page542 = new Page({
   pageID: 542,
   title: "Key factors",
-  content: "Bayesian ranking\
-  Too few or too outdated reviews penalized\
-  Very high quality reviews help a lot\
-  Major issues push ranking down a lot"
+  content: "{Bayesian ranking}\
+  {Too few or too outdated reviews penalized}\
+  {Very high quality reviews help a lot}\
+  {Major issues push ranking down a lot}"
 });
 
 const page543 = new Page({
   pageID: 543,
   title: "Summary",
-  content: "Average ratings scalarizes a vector and ranks\
-  Average: factor of N multiplexing gain in wisdom of crowds,\
-  following independent and unbiased individual inputs\
-  Ranking: number of ratings should matter, as in Bayesian ranking"
+  content: "{Average ratings scalarizes a vector and ranks}\
+  {Average: factor of N multiplexing gain in wisdom of crowds,}\
+  {following independent and unbiased individual inputs}\
+  {Ranking: number of ratings should matter, as in Bayesian ranking}"
 });
 
 
