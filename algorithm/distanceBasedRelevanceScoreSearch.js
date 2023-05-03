@@ -45,8 +45,8 @@ const Page = mongoose.model("Page", pageSchema);
 
 // * Step 1: Get all the pages whose `content` field or `title` field contain a specific search string
 async function findPages(searchString) {
-  const contentMappedPages = await Page.find({content: {$regex: searchString}});
-  const titleMappedPages = await Page.find({title: {$regex: searchString}});
+  const contentMappedPages = await Page.find({content: {$regex: new RegExp(searchString, 'i')}});
+  const titleMappedPages = await Page.find({title: {$regex: new RegExp(searchString, 'i')}});
   return {contentMappedPages, titleMappedPages};
 };
 
@@ -318,7 +318,7 @@ async function sortSections(sectionRankScoreMap){
 // * Main function
 async function main() {
   // ! #### Map Search Word to Decisive Tags #####
-  const pages = await findPages("Wikipedia");
+  const pages = await findPages("netflix");
   console.log("contentMappedPages: ");
   console.log(pages.contentMappedPages);
   console.log("titleMappedPages: ");
