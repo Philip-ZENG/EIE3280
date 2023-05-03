@@ -46,8 +46,8 @@ const Page = mongoose.model("Page", pageSchema);
 
 // * Step 1: Get all the pages whose `content` field or `title` field contain a specific search string
 async function findPages(searchString) {
-  const contentMappedPages = await Page.find({content: {$regex: searchString}});
-  const titleMappedPages = await Page.find({title: {$regex: searchString}});
+  const contentMappedPages = await Page.find({content: {$regex: new RegExp(searchString, 'i')}});
+  const titleMappedPages = await Page.find({title: {$regex: new RegExp(searchString, 'i')}});
   return {contentMappedPages, titleMappedPages};
 };
 
