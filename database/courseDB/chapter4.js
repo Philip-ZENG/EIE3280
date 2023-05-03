@@ -393,7 +393,7 @@ const page432 = new Page({
 const page433 = new Page({
     pageID: 433,
     title: "Step 3: Compute Similarity Matrix",
-    content: "{D =  0.20 0.45 0.97 0.75 0.20  0.84 0.73 0.51 0.45 0.84  0.22 0.93 0.97 0.73 0.22  0.068 0.75 0.51 0.93 0.068 }"
+    content: "{D = 0.20 0.45 0.97 0.75 0.20 0.84 0.73 0.51 0.45 0.84 0.22 0.93 0.97 0.73 0.22  0.068 0.75 0.51 0.93 0.068 }"
   });
 
 const page434 = new Page({

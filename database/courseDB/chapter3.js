@@ -135,7 +135,7 @@ const page303 = new Page({
 const page304 = new Page({
   pageID:304,
   title: "Which webpages are more important",
-  content: "{ Usefulness of ranking is hard to measure}\
+  content: "{Usefulness of ranking is hard to measure}\
   {So rank by importance}\
   {How to quantify node importance}\
   {Count the number of links?}\
@@ -210,8 +210,8 @@ const section302 = new Section({
   sectionID: 302,
   chapter: 3,
   page: [page307.pageID,page304.pageID,page309.pageID,page310.pageID,page311.pageID],
-  tag: [IncomingLinks, OutgoingLinks],
-  tagIDs: [IncomingLinks.tagID, OutgoingLinks.tagID],
+  tag: [IncomingLinks, OutgoingLinks, PageRankAlgorthm],
+  tagIDs: [IncomingLinks.tagID, OutgoingLinks.tagID, PageRankAlgorthm.tagID],
   content: [page307,page308,page309,page310,page311]
 });
 
@@ -264,8 +264,8 @@ const section303 = new Section({
   sectionID: 303,
   chapter: 3,
   page: [page312.pageID,page313.pageID,page314.pageID,page315.pageID,page316.pageID],
-  tag: [HMatrix],
-  tagIDs: [HMatrix.tagID],
+  tag: [HMatrix,PageRankAlgorthm],
+  tagIDs: [HMatrix.tagID, PageRankAlgorthm.tagID],
   content: [page312,page313,page314,page315,page316]
 });
 
@@ -299,8 +299,8 @@ const section304 = new Section({
   sectionID: 304,
   chapter: 3,
   page: [page317.pageID,page318.pageID,page319.pageID],
-  tag: [HHatMatrix],
-  tagIDs: [HHatMatrix.tagID],
+  tag: [HHatMatrix,PageRankAlgorthm],
+  tagIDs: [HHatMatrix.tagID,PageRankAlgorthm.tagID],
   content: [page317,page318,page319]
 });
 
@@ -325,6 +325,7 @@ const page321 = new Page({
   {Normalization}\
   {Display pages on Google search page according to ranking (no scores)}"
 });
+
 const section305 = new Section({
   sectionID: 305,
   chapter: 3,

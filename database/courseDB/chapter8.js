@@ -252,12 +252,11 @@ const page807 = new Page({
   content: "{G = (V, E)}\
   {V: set of nodes (indexed by i)}\
   {E: set of links (in the form of (i, j))}\
-  Directed graph: (i, j) ∈ E does not imply that (j, i) ∈ E\
-  Undirected graph: (i, j) ∈ E implies that (j, i) ∈ E (each link is\
-  bidirectional)\
-  We only consider simple and connected graphs\
-  Simple: each link only connects two nodes\
-  Connected: there is no “disconnected” node"
+  {Directed graph: (i, j) ∈ E does not imply that (j, i) ∈ E\
+  {Undirected graph: (i, j) ∈ E implies that (j, i) ∈ E (each link is bidirectional)}\
+  {We only consider simple and connected graphs}\
+  {Simple: each link only connects two nodes}\
+  {Connected: there is no “disconnected” node}"
 });
 
 const section801 = new Section({
@@ -274,7 +273,7 @@ const section801 = new Section({
 const page808 = new Page({
   pageID: 808,
   title: "Adjacency Matrix",
-  content: "{A: N × N matrix}"
+  content: "{A: N * N matrix}"
 });
 
 const page809 = new Page({
@@ -282,16 +281,16 @@ const page809 = new Page({
   title: "Adjacency Matrix",
   content: "{Undirected Graph}\
   {(Symmetric matrix)}\
-  Directed Graph\
-  (Asymmetric matrix)"
+  {Directed Graph}\
+  {(Asymmetric matrix)}"
 });
 
 const page810 = new Page({
   pageID: 810,
   title: "Incidence Matrix",
-  content: "Aˆ: N × L matrix\
-  For a undirected graph:\
-  For a directed graph:"
+  content: "{A^: N * L matrix}\
+  {For a undirected graph:}\
+  {For a directed graph:}"
 });
 
 const page811 = new Page({
@@ -306,8 +305,8 @@ const page812 = new Page({
   pageID: 812,
   title: "Node Importance: Degree",
   content: "{Degree: out-degree, in-degree, total degree}\
-  Dunbar's number: 150\
-  https://en.wikipedia.org/wiki/Dunbar%27s_number"
+  {Dunbar's number: 150}\
+  {https://en.wikipedia.org/wiki/Dunbar%27s_number}"
 });
 
 const section802 = new Section({
@@ -325,20 +324,20 @@ const page813 = new Page({
   pageID: 813,
   title: "Node Importance: Eigenvector centrality",
   content: "{Eigenvector centrality (similar as Google PageRank algorithm)}\
-  {Assume the adjacency matrix A is full-rank, with eigenvalues {λi}}\
-  {and eigenvectors {vi}}\
-  Then we can write any vector x[0] as a linear combination of {vi}\
-  Then the iterative updating\
-  where only the largest eigenvalue λ1 plays the important role."
+  {Assume the adjacency matrix A is full-rank, with eigenvalues λi}\
+  {and eigenvectors vi}\
+  {Then we can write any vector x[0] as a linear combination of vi}\
+  {Then the iterative updating}\
+  {where only the largest eigenvalue λ1 plays the important role.}"
 });
 
 const page814 = new Page({
   pageID: 814,
   title: "Node Importance: Eigenvector centrality",
-  content: "{Eigenvector centrality x = {xi}}\
+  content: "{Eigenvector centrality x = xi}\
   {Ax = λ1x}\
   {which means}\
-  We can also normalize x (like the page importance scores)."
+  {We can also normalize x (like the page importance scores).}"
 });
 
 const section803 = new Section({
@@ -360,18 +359,18 @@ const page815 = new Page({
   {Diameter of the graph: max(i,j) dij}\
   {For a node i}\
   {average distance from it to all other nodes:}\
-  Summing over all (i, j) pairs with j ̸= i\
-  Closeness centrality is\
-  A larger Ci → node i is closer to other nodes → it is more important"
+  {Summing over all (i, j) pairs with j ̸= i}\
+  {Closeness centrality is}\
+  {A larger Ci → node i is closer to other nodes → it is more important}"
 });
 
 const page816 = new Page({
   pageID: 816,
   title: "Node Importance: Betweenness centrality",
   content: "{Betweenness centrality}\
-  gst: number of shortest paths between nodes s and t\
-  nist: number of shortest paths between nodes s and t that node i is on\
-  Node i's between centrality is"
+  {gst: number of shortest paths between nodes s and t}\
+  {nist: number of shortest paths between nodes s and t that node i is on}\
+  {Node i's between centrality is}"
 });
 
 const page817 = new Page({
@@ -388,7 +387,7 @@ const page818 = new Page({
   content: "{Adjacency matrix}\
   {Largest eigenvalue λ1 = 2.8723}\
   {Ax = λ1x}\
-  x = [0.4063, 0.3455, . . .]"
+  {x = [0.4063, 0.3455, . . .]}"
 });
 
 const page819 = new Page({
@@ -437,9 +436,9 @@ const page824 = new Page({
   title: "Link Importance",
   content: "{What is a link?}\
   {Directional?}\
-  Weak or strong?\
-  Locally or globally important?\
-  Link betweenness"
+  {Weak or strong?}\
+  {Locally or globally important?}\
+  {Link betweenness}"
 });
 
 const page825 = new Page({
@@ -464,8 +463,8 @@ const page827 = new Page({
   title: "Density of a Cluster",
   content: "{Density of a cluster p: each user in the cluster has at least p of his}\
   {neighbors in the cluster}\
-  Cluster (1, 2, 3), density =\
-  Cluster (1, 2, 3, 4), density ="
+  {Cluster (1, 2, 3), density =}\
+  {Cluster (1, 2, 3, 4), density =}"
 });
 
 const page828 = new Page({
@@ -480,19 +479,16 @@ const page829 = new Page({
   title: "Question 1",
   content: "{The whole network flips if and only if all clusters in the set of}\
   {non-flipped nodes have densities strictly less than 1 - p.}\
-  Part of the proof (only if part):\
-  Consider a cluster with a density of 1 - p or higher in the non-flipped nodes\
-  Even if all nodes outside of the cluster have flipped, nodes in this\
-  cluster will have enough neighbors supporting their original decisions\
-  and do not flip"
+  {Part of the proof (only if part):}\
+  {Consider a cluster with a density of 1 - p or higher in the non-flipped nodes}\
+  {Even if all nodes outside of the cluster have flipped, nodes in this cluster will have enough neighbors supporting their original decisions and do not flip}"
 });
 
 const page830 = new Page({
   pageID: 830,
   title: "Question 4",
-  content: "Optimal seeding strikes a tradeof\
-  Balance between concentration in the same neighborhood and\
-  spreading across the entire network"
+  content: "{Optimal seeding strikes a tradeof}\
+  {Balance between concentration in the same neighborhood and spreading across the entire network}"
 });
 
 const section805 = new Section({
@@ -510,26 +506,26 @@ const page831 = new Page({
   pageID: 831,
   title: "Question 4",
   content: "{p = 0.49}\
-  If we seed one node:\
-  If we seed two nodes:\
-  Is there a way to seed two nodes and flip the entire network?"
+  {If we seed one node:}\
+  {If we seed two nodes:}\
+  {Is there a way to seed two nodes and flip the entire network?}"
 });
 
 const page832 = new Page({
   pageID: 832,
   title: "Infection",
   content: "{State transition through differential equation over continuous time}\
-  Population based models first\
-  Then topology based models"
+  {Population based models first}\
+  {Then topology based models}"
 });
 
 const page833 = new Page({
   pageID: 833,
   title: "3 Models",
   content: "{SI}\
-  SIS\
-  SIR\
-  S: susceptible; I: infected; R: recovered"
+  {SIS}\
+  {SIR}\
+  {S: susceptible; I: infected; R: recovered}"
 });
 
 const page834 = new Page({
@@ -547,53 +543,53 @@ const page835 = new Page({
 const page836 = new Page({
   pageID: 836,
   title: "SIS Model",
-  content: "Basic reproduction number sigma =beta/gamma > 1\
-  What happen if sigma < 1?"
+  content: "{Basic reproduction number sigma =beta/gamma > 1}\
+  {What happen if sigma < 1?}"
 });
 
 const page837 = new Page({
   pageID: 837,
   title: "SIR Model",
   content: "{No closed form solution, but some insights}\
-  S(t) is always decreasing, R(t) is always increasing\
-  If sigma_S(0) ≤ 1, I(t) is decreasing and there is no epidemics\
-  If sigma_S(0) > 1, I(t) will first increase and then decrease"
+  {S(t) is always decreasing, R(t) is always increasing}\
+  {If sigma_S(0) ≤ 1, I(t) is decreasing and there is no epidemics}\
+  {If sigma_S(0) > 1, I(t) will first increase and then decrease}"
 });
 
 const page838 = new Page({
   pageID: 838,
   title: "Infection with Topology (SI Model)",
   content: "{A: adjacency matrix}\
-  Si(t): probability of node i in state S at time t\
-  Ii(t): probability of node i in state I at time t\
-  Approximation:\
-  Pr(Node i in state S & node j in state I at time t) = Si(t)Ij(t)"
+  {Si(t): probability of node i in state S at time t}\
+  {Ii(t): probability of node i in state I at time t}\
+  {Approximation:}\
+  {Pr(Node i in state S & node j in state I at time t) = Si(t)Ij(t)}"
 });
 
 const page839 = new Page({
   pageID: 839,
   title: "Infection with Topology (SI Model)",
   content: "{Assume Ii(t) is small during the initial time of infection, then}\
-  {λk} and {vk}: eigenvalues and eigenvectors of adjacency matrix A"
+  {λk and vk: eigenvalues and eigenvectors of adjacency matrix A}"
 });
 
 const page840 = new Page({
   pageID: 840,
   title: "Case Study: Measles",
   content: "{We need sigma_S(0) < 1 to avoid epidemics}\
-  With no initial infection (I(0) = 0), this means R(0) > 1 - 1/sigma\
-  For measles, sigma = 16.67, which leads to R(0) > 94%\
-  Measles vaccination successful rate is 95%\
-  Hence we need vaccination rate 94%/95% = 99%"
+  {With no initial infection (I(0) = 0), this means R(0) > 1 - 1/sigma}\
+  {For measles, sigma = 16.67, which leads to R(0) > 94%}\
+  {Measles vaccination successful rate is 95%}\
+  {Hence we need vaccination rate 94%/95% = 99%}"
 });
 
 const page841 = new Page({
   pageID: 841,
   title: "Summary",
   content: "{Influence models in a network}\
-  Nodes (and links) importance scores by various centrality measures\
-  Contagion model: optimal seeding is difficult\
-  Infection model: change the states of each node"
+  {Nodes (and links) importance scores by various centrality measures}\
+  {Contagion model: optimal seeding is difficult}\
+  {Infection model: change the states of each node}"
 });
 
 const section806 = new Section({
