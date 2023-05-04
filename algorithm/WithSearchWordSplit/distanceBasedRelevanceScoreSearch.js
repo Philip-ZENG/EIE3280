@@ -304,35 +304,23 @@ async function calculateRankScore(sectionRelevanceScoreMap){
   return sectionRankScoreMap;
 };
 
-// ! ############### Rank Sections based on RankScore ###############
-// * Step 7: Sort the sections by rank score in descending order
-async function sortSections(sectionRankScoreMap){
-  // Create an array to store the sectionID
-  var rankedSectionIDArray = Array.from(sectionRankScoreMap.keys());
-  // Sort the sectionIDArray in descending order
-  rankedSectionIDArray.sort(function(a, b){return sectionRankScoreMap.get(b) - sectionRankScoreMap.get(a)});
-  return rankedSectionIDArray;
-};
-
+// ! ############### Use Inverse Term Frequency to Adjust Rank Score ###############
+// * Step 7: Calculate the inverse document frequency of a search string word
 async function calculateLogCount(searchString) {
   // define a set to record the pages that contains the search string
   const visitedPages = new Set();
-
   // define the counter
   let count = 0;
-
   // define a set that has all the pages
   const pages = await Page.find({});
 
   // iterate through all the pages
   for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
-
     // check if this page has already been visited
     if (visitedPages.has(page.pageID)) {
       continue;
     }
-
     // seach the string in this page
     if (page.content.includes(searchString)) {
       count++;
@@ -343,6 +331,16 @@ async function calculateLogCount(searchString) {
   // return the lnx number
   return Math.log(count/pages.length);
 }
+
+// ! ############### Sort Sections based on RankScore ###############
+// * Step 8: Sort the sections by rank score in descending order
+async function sortSections(sectionRankScoreMap){
+  // Create an array to store the sectionID
+  var rankedSectionIDArray = Array.from(sectionRankScoreMap.keys());
+  // Sort the sectionIDArray in descending order
+  rankedSectionIDArray.sort(function(a, b){return sectionRankScoreMap.get(b) - sectionRankScoreMap.get(a)});
+  return rankedSectionIDArray;
+};
 
 // * Main function
 async function main() {
@@ -388,6 +386,7 @@ async function main() {
     const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
     console.log("rankScore: ", rankScoreMap);
 
+    // ! #### Use Inverse Term Frequency to Adjust RankScore ####
     var inverseCount = await calculateLogCount(word);
 
     for (let [key,value] of rankScoreMap) {
@@ -396,24 +395,20 @@ async function main() {
     }
 
     for (let [key,value] of rankScoreMap) {
-        if (listRankScorMap.has(key)) {
-            value+=listRankScorMap.get(key);
-            listRankScorMap.set(key,value);
-        }
-        else {
-            listRankScorMap.set(key,value);
-        }
+      if (listRankScorMap.has(key)) {
+          value+=listRankScorMap.get(key);
+          listRankScorMap.set(key,value);
+      }
+      else {
+          listRankScorMap.set(key,value);
+      }
     }
 
     sectionMap.clear();
     tagMap.clear();
   }
 
-  
-
-
-
-  // ! #### Rank Sections based on RankScore ####
+  // ! #### Rank Sections based on Final RankScore ####
   const rankedSectionIDArray = await sortSections(listRankScorMap);
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
 

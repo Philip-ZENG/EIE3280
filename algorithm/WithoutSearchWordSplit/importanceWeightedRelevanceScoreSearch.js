@@ -303,8 +303,6 @@ async function Dijkstra(tagIDArray, startTagID){
 };
 
 // * Step 5: Calculate the importance score weighted relevance score of each section
-// TODO: Modify this to use importance score as weight to calculate relevance score
-
 async function calculateRelevanceScore(sectionIDArray, decisiveMap){
   // Prepare for Dijkstra algorithm
   const tagCount = await Tag.countDocuments();

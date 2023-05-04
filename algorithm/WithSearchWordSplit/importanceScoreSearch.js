@@ -1,7 +1,7 @@
 /**
  * @description
  * * Given a search string, return a list of sections that are relevant to the search string
- * * Use only the importance score weighted relevance score to determine the relevance of a section
+ * * Use only the importance score to determine the rank of a section
  */
 
 const mongoose = require('mongoose');
@@ -88,7 +88,8 @@ async function findSections(pages, occurrenceWeight, sectionMap, tagMap) {
   return {sectionMap, tagMap};
 };
 
-// ! ############### Compute Relevance Score ###############
+
+// ! ############### Compute Importance Score ###############
 
 // * Step 1: Given the tagIDCountMap, determine the tagIDs that has the top `decisiveTagNumber` of highest count value
 //  * return a new Map object that contains the top `decisiveTagNumber` of tagIDs (key) and their count value (value)
@@ -230,85 +231,9 @@ async function calculateTagImportanceScore(){
 };
 
 
-// * Step 4: Calculate shortest distance between tags using Dijkstra's algorithm
-// Use Dijkstra's algorithm to calculate the shortest distance between two tags, return the distance
-// All the tags are represented by its tag ID
-// ! If the cost of each edge is not a constant number, the edge cost should be stored in the database
-async function Dijkstra(tagIDArray, startTagID){
-  var Distance = new Map();
-  var LeastCostPath = new Array();
-
-  // Initialization
-  LeastCostPath.push(startTagID);
-  Distance.set(startTagID, 0);
-  const startTag = await Tag.find({tagID: startTagID});
-  const startTagNeighborsID = startTag[0].neighbors;
-  for (var i = 0; i < tagIDArray.length; i++){
-    if (tagIDArray[i] != startTagID){
-      if (startTagNeighborsID.includes(tagIDArray[i])) {
-        // ! Cost of each edge is assumed to be 1
-        Distance.set(tagIDArray[i], 1);
-      } else {
-        Distance.set(tagIDArray[i], Infinity);
-      };
-    };
-  };
-
-  // Main loop
-  while (LeastCostPath.length < tagIDArray.length){
-    var minDistance = Infinity;
-    var minDistanceTagID = 0;
-    for (var i = 0; i < tagIDArray.length; i++){
-      // For tag that is not in the least cost path
-      if (!LeastCostPath.includes(tagIDArray[i])){
-        // Find the tag with the minimum distance from the start tag
-        if (Distance.get(tagIDArray[i]) < minDistance){
-          minDistance = Distance.get(tagIDArray[i]);
-          minDistanceTagID = tagIDArray[i];
-        };
-      };
-    };
-
-    // If minDistance is Infinity, and miniDistanceTagID is 0, it means there is no path to reach the rest of the tags 
-    // (No any other connected nodes); Return the results
-    if(minDistance == Infinity && minDistanceTagID == 0){
-      console.log("No path to reach the rest of the tags");
-      return {Distance, LeastCostPath};
-    };
-
-    // Add the tag with the minimum distance to the least cost path
-    LeastCostPath.push(minDistanceTagID);
-    // Update the distance of the neighbors of the tag with the minimum distance
-    const minDistanceTag = await Tag.find({tagID: minDistanceTagID});
-    console.log(minDistanceTag);
-    // Get ID of all neighbors of the tag with the minimum distance
-    const minDistanceTagNeighborsID = minDistanceTag[0].neighbors;
-    for (var i = 0; i < tagIDArray.length; i++){
-      // For tag that is not in the least cost path
-      if (!LeastCostPath.includes(tagIDArray[i])){
-        // Update the distance of the neighbors of the tag with the minimum distance
-        if (minDistanceTagNeighborsID.includes(tagIDArray[i])) {
-          // New distance is either the old distance or the distance from the start tag to the tag with the minimum distance plus 1
-          // ! Cost of each edge is assumed to be 1
-          if (Distance.get(tagIDArray[i]) > minDistance + 1){
-            // ! Cost of each edge is assumed to be 1
-            Distance.set(tagIDArray[i], minDistance + 1);
-          };
-        };
-      };
-    };
-  };
-
-  return {Distance, LeastCostPath};
-};
-
-// * Step 5: Calculate the importance score weighted relevance score of each section
-// TODO: Modify this to use importance score as weight to calculate relevance score
-
+// * Step 4: Use importance score as the only factor to calculate the relevance score
 async function calculateRelevanceScore(sectionIDArray, decisiveMap){
-  // Prepare for Dijkstra algorithm
-  const tagCount = await Tag.countDocuments();
-  var tagIDArray = Array.from({ length: tagCount }, (value, index) => index + 1);
+  // Get the sum of weighted frequency of all decisive tags
   var decisiveTagIDArray = Array.from(decisiveMap.keys());
   var sumOfWeightedFrequency = 0;
   for (let key of decisiveMap.keys()) {
@@ -326,9 +251,6 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
 
     // Get the shortest distance between the decisive tag and all other tags in the section
     const decisiveTagID = decisiveTagIDArray[k];
-    const returns = await Dijkstra(tagIDArray, decisiveTagID);
-    const DistanceMap = returns.Distance;
-    console.log("Distance from tag ", decisiveTagID, " to other tags: ", DistanceMap);
     
     // Iterate through the sectionIDArray
     for (let i = 0; i < sectionIDArray.length; i++){
@@ -344,7 +266,7 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
       // ! Notice: If some tag is not reachable from the decisive tag, the distance between them is Infinity; 1/(Infinity+1) = 0
       let relevanceScore = 0;
       for (let j = 0; j < tagIDs.length; j++){
-        relevanceScore += 10 * tagImportanceScoreMap.get(tagIDs[j]) * 1/(DistanceMap.get(tagIDs[j])+1);
+        relevanceScore += 10 * tagImportanceScoreMap.get(tagIDs[j]);
       };
 
       // For a decisive map with more than 1 tag (key), we need to assign each tag's influence such that it is proportional to the weighted frequecy of the tag
@@ -447,7 +369,6 @@ async function calculateLogCount(searchString) {
   return Math.log(count/pages.length);
 }
 
-
 // ! ############### Rank Sections based on RankScore ###############
 // * Step 1: Sort the sections by rank score in descending order
 async function sortSections(sectionRankScoreMap){
@@ -459,10 +380,9 @@ async function sortSections(sectionRankScoreMap){
 };
 
 
-
 // * Main function
 async function main() {
-  var string = "vote";
+  var string = "movie rating";
   var wordsList=string.split(' ');
   // Create a Map to store the sectionID (key) and the count of the number of pages that are in the section (value)
   var sectionMap = new Map();
@@ -480,31 +400,31 @@ async function main() {
     const tagIDFrequencyMap = returns.tagMap;
 
     // ! #### Compute Relevance Score ####
-    console.log(word + "sectionIDFrequencyMap: ", sectionIDFrequencyMap);
-    console.log(word + "tagIDFrequencyMap: ", tagIDFrequencyMap);
+    console.log("sectionIDFrequencyMap: ", sectionIDFrequencyMap);
+    console.log("tagIDFrequencyMap: ", tagIDFrequencyMap);
 
     const decisiveMap = findDecisiveTag(tagIDFrequencyMap,3);
-    console.log(word + "decisiveMap: ", decisiveMap);
+    console.log("decisiveMap: ", decisiveMap);
 
     const sectionIDArray = await findRelevantSections(decisiveMap);
-    console.log(word + "sectionIDArray: ", sectionIDArray);
+    console.log("sectionIDArray: ", sectionIDArray);
 
     const sectionRelevanceScoreMap = await calculateRelevanceScore(sectionIDArray, decisiveMap);
-    console.log(word + "sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
+    console.log("sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
 
     // ! #### User Feedback Mechanism & RankScore Calculation ####
     await generateRandomFeedback(sectionRelevanceScoreMap, 10);
 
     const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
-    console.log(word + "rankScore: ", rankScoreMap);
+    console.log("rankScore: ", rankScoreMap);
 
-    // ! #### Calculate Inverse Document Frequency ####
-    var inverseCount = await calculateLogCount(word);
+    // ! #### Use Inverse Term Frequency to Adjust RankScore ####
+    // var inverseCount = await calculateLogCount(word);
 
-    for (let [key,value] of rankScoreMap) {
-      value *= inverseCount;
-      rankScoreMap.set(key,value);
-    }
+    // for (let [key,value] of rankScoreMap) {
+    //   value *= inverseCount;
+    //   rankScoreMap.set(key,value);
+    // }
 
     for (let [key,value] of rankScoreMap) {
       if (listRankScorMap.has(key)) {
@@ -518,6 +438,7 @@ async function main() {
 
     sectionMap.clear();
     tagMap.clear();
+
   }
 
   // ! #### Rank Sections based on RankScore ####
@@ -528,4 +449,3 @@ async function main() {
 };
 
 main();
-
