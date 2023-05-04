@@ -32,7 +32,8 @@ const sectionSchema = new mongoose.Schema ({
   page: [Number],
   tag: [tagSchema],
   tagIDs: [Number],
-  content: [pageSchema]
+  content: [pageSchema],
+  feedbackScore: { type: Number, default: 0 }
 });
 
 
