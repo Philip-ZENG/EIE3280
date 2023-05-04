@@ -196,7 +196,7 @@ async function get_PageRank_Vector(GoogleMatrix, epsilon){
     numIterations++;
   };
 
-  console.log("Number of iterations: " + numIterations);
+  // console.log("Number of iterations: " + numIterations);
 
   return PageRankVector;
 };
@@ -213,7 +213,7 @@ async function calculateTagImportanceScore(){
   // console.log(GoogleMatrix);
 
   const PageRankVector = await get_PageRank_Vector(GoogleMatrix, 0.0001);
-  console.log(PageRankVector);
+  // console.log(PageRankVector);
 
   // the importance score vector (pageRank vector) is small, so we may need to scale it up
   // const scaledPageRankVector = mathjs.multiply(PageRankVector, 2);
@@ -380,10 +380,10 @@ async function sortSections(sectionRankScoreMap){
 };
 
 
+// ! ############### Experiment ###############
 // * Main function
-async function main() {
-  var string = "movie rating";
-  var wordsList=string.split(' ');
+async function search(searchString) {
+  var wordsList=searchString.split(' ');
   // Create a Map to store the sectionID (key) and the count of the number of pages that are in the section (value)
   var sectionMap = new Map();
   // Create a Map to store the tagName (key) and the the occurrence frequency of such tag (value)
@@ -400,23 +400,23 @@ async function main() {
     const tagIDFrequencyMap = returns.tagMap;
 
     // ! #### Compute Relevance Score ####
-    console.log("sectionIDFrequencyMap: ", sectionIDFrequencyMap);
-    console.log("tagIDFrequencyMap: ", tagIDFrequencyMap);
+    // console.log("sectionIDFrequencyMap: ", sectionIDFrequencyMap);
+    // console.log("tagIDFrequencyMap: ", tagIDFrequencyMap);
 
     const decisiveMap = findDecisiveTag(tagIDFrequencyMap,3);
-    console.log("decisiveMap: ", decisiveMap);
+    // console.log("decisiveMap: ", decisiveMap);
 
     const sectionIDArray = await findRelevantSections(decisiveMap);
-    console.log("sectionIDArray: ", sectionIDArray);
+    // console.log("sectionIDArray: ", sectionIDArray);
 
     const sectionRelevanceScoreMap = await calculateRelevanceScore(sectionIDArray, decisiveMap);
-    console.log("sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
+    // console.log("sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
 
     // ! #### User Feedback Mechanism & RankScore Calculation ####
-    await generateRandomFeedback(sectionRelevanceScoreMap, 10);
+    // await generateRandomFeedback(sectionRelevanceScoreMap, 10);
 
     const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
-    console.log("rankScore: ", rankScoreMap);
+    // console.log("rankScore: ", rankScoreMap);
 
     // ! #### Use Inverse Term Frequency to Adjust RankScore ####
     // var inverseCount = await calculateLogCount(word);
@@ -442,10 +442,52 @@ async function main() {
   }
 
   // ! #### Rank Sections based on RankScore ####
+  // console.log("listRankScorMap: ", listRankScorMap);
   const rankedSectionIDArray = await sortSections(listRankScorMap);
+  console.log(">>> For " + word)
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
 
-  mongoose.disconnect();
+  return rankedSectionIDArray;
 };
 
-main();
+
+// ! ############### Evaluation ###############
+// * Step 0: Define the test query and "correct" answers (most relevant sections)
+const testSet = new Map([
+  ["vote",[603,604]],
+  ["neighborhood",[402]],
+  ["borda count",[603]],
+  ["root mean square error",[401,503]],
+  ["page rank",[302,303,304]],
+  ["movie rating",[401,402]]
+]);
+
+
+// * Step 1: Calculate the Mean Reciprocal Rank (MRR)
+async function calculateMRR(testSet){
+  var MRR = 0;
+  const testQueryArray =  Array.from(testSet.keys());
+  // for each test case
+  for(let j = 0; j < testSet.size; j++){
+    const rankedSectionIDArray = await search(testQueryArray[j]);
+    const correctAnswer = testSet.get(testQueryArray[j]);
+    var caseMRR = 0;
+    for(let i = 0; i < rankedSectionIDArray.length; i++) {
+      if(correctAnswer.includes(rankedSectionIDArray[i])){
+        caseMRR = caseMRR + 1/(1+i)
+      }
+    }
+    MRR = MRR + 1/correctAnswer.length * caseMRR;
+  }
+  MRR = MRR * 1/testSet.size;
+  
+  return MRR;
+}
+
+async function evaluate(){
+  const MRR = await calculateMRR(testSet);
+  console.log("Final MRR", MRR);
+  mongoose.disconnect();
+}
+
+evaluate();

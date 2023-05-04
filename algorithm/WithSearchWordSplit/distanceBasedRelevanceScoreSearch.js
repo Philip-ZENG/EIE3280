@@ -162,7 +162,7 @@ async function Dijkstra(tagIDArray, startTagID){
     // If minDistance is Infinity, and miniDistanceTagID is 0, it means there is no path to reach the rest of the tags 
     // (No any other connected nodes); Return the results
     if(minDistance == Infinity && minDistanceTagID == 0){
-      console.log("No path to reach the rest of the tags");
+      // console.log("No path to reach the rest of the tags");
       return {Distance, LeastCostPath};
     };
 
@@ -170,7 +170,7 @@ async function Dijkstra(tagIDArray, startTagID){
     LeastCostPath.push(minDistanceTagID);
     // Update the distance of the neighbors of the tag with the minimum distance
     const minDistanceTag = await Tag.find({tagID: minDistanceTagID});
-    console.log(minDistanceTag);
+    // console.log(minDistanceTag);
     // Get ID of all neighbors of the tag with the minimum distance
     const minDistanceTagNeighborsID = minDistanceTag[0].neighbors;
     for (var i = 0; i < tagIDArray.length; i++){
@@ -214,7 +214,7 @@ async function calculateRelevanceScore(sectionIDArray, decisiveMap){
     const decisiveTagID = decisiveTagIDArray[k];
     const returns = await Dijkstra(tagIDArray, decisiveTagID);
     const DistanceMap = returns.Distance;
-    console.log("Distance from tag ", decisiveTagID, " to other tags: ", DistanceMap);
+    // console.log("Distance from tag ", decisiveTagID, " to other tags: ", DistanceMap);
     
     // Iterate through the sectionIDArray
     for (let i = 0; i < sectionIDArray.length; i++){
@@ -343,24 +343,23 @@ async function sortSections(sectionRankScoreMap){
 };
 
 // * Main function
-async function main() {
+async function search(searchString) {
   // ! #### Map Search Word to Decisive Tags #####
-  var string = "page rank";
-  var wordsList=string.split(' ');
+  var wordsList=searchString.split(' ');
   // Create a Map to store the sectionID (key) and the count of the number of pages that are in the section (value)
   var sectionMap = new Map();
   // Create a Map to store the tagName (key) and the the occurrence frequency of such tag (value)
   var tagMap = new Map();
   // Final rank score map of all words in input string
-  var listRankScorMap = new Map();
+  var listRankScoreMap = new Map();
 
   for (var word of wordsList) {
 
     const pages = await findPages(word);
-    console.log(word + "contentMappedPages: ");
-    console.log(pages.contentMappedPages);
-    console.log(word + "titleMappedPages: ");
-    console.log(pages.titleMappedPages);
+    // console.log(word + "contentMappedPages: ");
+    // console.log(pages.contentMappedPages);
+    // console.log(word + "titleMappedPages: ");
+    // console.log(pages.titleMappedPages);
 
     var returns = await findSections(pages.contentMappedPages, 1, sectionMap, tagMap);
     returns = await findSections(pages.titleMappedPages, 2, returns.sectionMap, returns.tagMap);
@@ -368,39 +367,39 @@ async function main() {
     const tagIDFrequencyMap = returns.tagMap;
 
     // ! #### Compute Relevance Score ####
-    console.log(word + "sectionIDFrequencyMap: ", sectionIDFrequencyMap);
-    console.log(word + "tagIDFrequencyMap: ", tagIDFrequencyMap);
+    // console.log(word + "sectionIDFrequencyMap: ", sectionIDFrequencyMap);
+    // console.log(word + "tagIDFrequencyMap: ", tagIDFrequencyMap);
 
     const decisiveMap = findDecisiveTag(tagIDFrequencyMap,3);
-    console.log(word + "decisiveMap: ", decisiveMap);
+    // console.log(word + "decisiveMap: ", decisiveMap);
 
     const sectionIDArray = await findRelevantSections(decisiveMap);
-    console.log(word + "sectionIDArray: ", sectionIDArray);
+    // console.log(word + "sectionIDArray: ", sectionIDArray);
 
     const sectionRelevanceScoreMap = await calculateRelevanceScore(sectionIDArray, decisiveMap);
-    console.log(word + "sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
+    // console.log(word + "sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
 
     // ! #### User Feedback Mechanism & RankScore Calculation ####
-    await generateRandomFeedback(sectionRelevanceScoreMap, 10);
+    // await generateRandomFeedback(sectionRelevanceScoreMap, 10);
 
     const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
-    console.log("rankScore: ", rankScoreMap);
+    // console.log("rankScore: ", rankScoreMap);
 
     // ! #### Use Inverse Term Frequency to Adjust RankScore ####
-    var inverseCount = await calculateLogCount(word);
+    // var inverseCount = await calculateLogCount(word);
+
+    // for (let [key,value] of rankScoreMap) {
+    //   value *= inverseCount;
+    //   rankScoreMap.set(key,value);
+    // }
 
     for (let [key,value] of rankScoreMap) {
-      value *= inverseCount;
-      rankScoreMap.set(key,value);
-    }
-
-    for (let [key,value] of rankScoreMap) {
-      if (listRankScorMap.has(key)) {
-          value+=listRankScorMap.get(key);
-          listRankScorMap.set(key,value);
+      if (listRankScoreMap.has(key)) {
+          value+=listRankScoreMap.get(key);
+          listRankScoreMap.set(key,value);
       }
       else {
-          listRankScorMap.set(key,value);
+          listRankScoreMap.set(key,value);
       }
     }
 
@@ -409,10 +408,49 @@ async function main() {
   }
 
   // ! #### Rank Sections based on Final RankScore ####
-  const rankedSectionIDArray = await sortSections(listRankScorMap);
+  // console.log("listRankScoreMap: ", listRankScoreMap);
+  const rankedSectionIDArray = await sortSections(listRankScoreMap);
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
-
-  mongoose.disconnect();
+  return rankedSectionIDArray;
 };
 
-main();
+// ! ############### Evaluation ###############
+// * Step 0: Define the test query and "correct" answers (most relevant sections)
+const testSet = new Map([
+  ["vote",[603,604]],
+  ["neighborhood",[402]],
+  ["borda count",[603]],
+  ["root mean square error",[401,503]],
+  ["page rank",[302,303,304]],
+  ["movie rating",[401,402]]
+]);
+
+
+// * Step 1: Calculate the Mean Reciprocal Rank (MRR)
+async function calculateMRR(testSet){
+  var MRR = 0;
+  const testQueryArray =  Array.from(testSet.keys());
+  // for each test case
+  for(let j = 0; j < testSet.size; j++){
+    const rankedSectionIDArray = await search(testQueryArray[j]);
+    const correctAnswer = testSet.get(testQueryArray[j]);
+    var caseMRR = 0;
+    for(let i = 0; i < rankedSectionIDArray.length; i++) {
+      if(correctAnswer.includes(rankedSectionIDArray[i])){
+        caseMRR = caseMRR + 1/(1+i)
+      }
+    }
+    MRR = MRR + 1/correctAnswer.length * caseMRR;
+  }
+  MRR = MRR * 1/testSet.size;
+  
+  return MRR;
+}
+
+async function evaluate(){
+  const MRR = await calculateMRR(testSet);
+  console.log("Final MRR", MRR);
+  mongoose.disconnect();
+}
+
+evaluate();
