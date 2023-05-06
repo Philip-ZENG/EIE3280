@@ -421,7 +421,8 @@ async function calculateRankScore(sectionRelevanceScoreMap){
 
 // ! ############### Use Inverse Term Frequency to Adjust Rank Score ###############
 // * Step 1: Calculate the inverse document frequency of a search string word
-async function calculateLogCount(searchString) {
+async function calculateLogCount(searchWord) {
+  const word = searchWord.toLowerCase();
   // define a set to record the pages that contains the search string
   const visitedPages = new Set();
   // define the counter
@@ -437,14 +438,16 @@ async function calculateLogCount(searchString) {
       continue;
     }
     // seach the string in this page
-    if (page.content.includes(searchString)) {
+    if (page.content.toLowerCase().includes(word) || page.title.toLowerCase().includes(word)) {
       count++;
       visitedPages.add(page.pageID);
     }
   }
 
   // return the lnx number
-  return Math.log(pages.length/count);
+  // console.log(count);
+  // console.log(pages.length);
+  return Math.log(pages.length/count+1);
   // return Math.log(count/pages.length);
 }
 
@@ -462,71 +465,71 @@ async function sortSections(sectionRankScoreMap){
 
 // * Main function
 async function search(searchString) {
-  var wordsList=searchString.split(' ');
+  var wordsList=searchString.toLowerCase().split(' ');
   // Create a Map to store the sectionID (key) and the count of the number of pages that are in the section (value)
   var sectionMap = new Map();
   // Create a Map to store the tagName (key) and the the occurrence frequency of such tag (value)
   var tagMap = new Map();
   // Final rank score map of all words in input string
-  var listRankScoreMap = new Map();
+  var searchStringFrequencyMap = new Map();
   
+  // ! #### Map Search Word to Decisive Tags #####
   for (var word of wordsList) {
-    // ! #### Map Search Word to Decisive Tags #####
     const pages = await findPages(word);
     var returns = await findSections(pages.contentMappedPages, 1, sectionMap, tagMap);
     returns = await findSections(pages.titleMappedPages, 2, returns.sectionMap, returns.tagMap);
     const sectionIDFrequencyMap = returns.sectionMap;
     const tagIDFrequencyMap = returns.tagMap;
-
-    // ! #### Compute Relevance Score ####
-    // console.log(word + "sectionIDFrequencyMap: ", sectionIDFrequencyMap);
-    // console.log(word + "tagIDFrequencyMap: ", tagIDFrequencyMap);
-
-    const decisiveMap = findDecisiveTag(tagIDFrequencyMap,3);
-    // console.log(word + "decisiveMap: ", decisiveMap);
-
-    const sectionIDArray = await findRelevantSections(decisiveMap);
-    // console.log(word + "sectionIDArray: ", sectionIDArray);
-
-    const sectionRelevanceScoreMap = await calculateRelevanceScore(sectionIDArray, decisiveMap);
-    // console.log(word + "sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
-
-    // ! #### User Feedback Mechanism & RankScore Calculation ####
-    // await generateRandomFeedback(sectionRelevanceScoreMap, 10);
-
-    const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
-    // console.log(word + "rankScore: ", rankScoreMap);
-
-    // ! #### Calculate Inverse Document Frequency ####
-    // var inverseCount = await calculateLogCount(word);
+    // console.log("sectionIDFrequencyMap of " + word + " ", sectionIDFrequencyMap);
+    
+    var inverseCount = await calculateLogCount(word);
     // console.log("inverse count of " + word + " is: ", inverseCount);
-    // for (let [key,value] of rankScoreMap) {
-    //   value = value * inverseCount;
-    //   rankScoreMap.set(key,value);
-    // }
-
-    for (let [key,value] of rankScoreMap) {
-      if (listRankScoreMap.has(key)) {
-        value+=listRankScoreMap.get(key);
-        listRankScoreMap.set(key,value);
-      }
-      else {
-        listRankScoreMap.set(key,value);
-      }
+    for (let [key,value] of tagIDFrequencyMap) {
+      value = value * inverseCount;
+      tagIDFrequencyMap.set(key,value);
     }
 
+    for (let [key,value] of tagIDFrequencyMap) {
+      if (searchStringFrequencyMap.has(key)) {
+        value+=searchStringFrequencyMap.get(key);
+        searchStringFrequencyMap.set(key,value);
+      }
+      else {
+        searchStringFrequencyMap.set(key,value);
+      }
+    }
+    
     sectionMap.clear();
     tagMap.clear();
   }
+    
+
+  const decisiveMap = findDecisiveTag(searchStringFrequencyMap,3);
+  // console.log(searchString, decisiveMap)
+  
+  const sectionIDArray = await findRelevantSections(decisiveMap);
+  // console.log(word + "sectionIDArray: ", sectionIDArray);
+  
+  // ! #### Compute Relevance Score ####
+  const sectionRelevanceScoreMap = await calculateRelevanceScore(sectionIDArray, decisiveMap);
+  // console.log(word + "sectionRelevanceScoreMap: ", sectionRelevanceScoreMap);
+
+  // ! #### User Feedback Mechanism & RankScore Calculation ####
+  // await generateRandomFeedback(sectionRelevanceScoreMap, 10);
+
+  const rankScoreMap = await calculateRankScore(sectionRelevanceScoreMap);
+  // console.log(word + "rankScore: ", rankScoreMap);
 
   // ! #### Rank Sections based on RankScore ####
-  // console.log("listRankScoreMap:", listRankScoreMap);
-  const rankedSectionIDArray = await sortSections(listRankScoreMap);
+  // console.log("RankScoreMap:", rankScoreMap);
+  const rankedSectionIDArray = await sortSections(rankScoreMap);
   console.log(">>> For " + searchString);
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
+  console.log();
 
   return rankedSectionIDArray;
 };
+
 
 // ! ############### Evaluation ###############
 // * Step 0: Define the test query and "correct" answers (most relevant sections)
