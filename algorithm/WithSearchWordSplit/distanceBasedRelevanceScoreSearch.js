@@ -410,13 +410,15 @@ async function search(searchString) {
   // ! #### Rank Sections based on Final RankScore ####
   // console.log("listRankScoreMap: ", listRankScoreMap);
   const rankedSectionIDArray = await sortSections(listRankScoreMap);
+  console.log(">>> For " + searchString)
   console.log("rankedSectionIDArray: ", rankedSectionIDArray);
+
   return rankedSectionIDArray;
 };
 
 // ! ############### Evaluation ###############
 // * Step 0: Define the test query and "correct" answers (most relevant sections)
-const testSet = new Map([
+const testSet1 = new Map([
   ["vote",[603,604]],
   ["neighborhood",[402]],
   ["borda count",[603]],
@@ -424,6 +426,16 @@ const testSet = new Map([
   ["page rank",[302,303,304]],
   ["movie rating",[401,402]]
 ]);
+
+const testSet2 = new Map([
+  ["vote system",[603,604]],
+  ["how to use neighborhood method",[402]],
+  ["the borda count",[603]],
+  ["root mean square error",[401,503]],
+  ["google page rank algorithm",[302,303,304]],
+  ["what is netflix movie rating",[401,402]]
+]);
+
 
 
 // * Step 1: Calculate the Mean Reciprocal Rank (MRR)
@@ -448,7 +460,7 @@ async function calculateMRR(testSet){
 }
 
 async function evaluate(){
-  const MRR = await calculateMRR(testSet);
+  const MRR = await calculateMRR(testSet1);
   console.log("Final MRR", MRR);
   mongoose.disconnect();
 }
